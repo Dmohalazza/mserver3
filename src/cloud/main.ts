@@ -1324,5 +1324,3 @@ return response;
 
 } )
 
-
-Parse.Cloud.run("_AddressSyncStatus2");
