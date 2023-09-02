@@ -11,8 +11,9 @@ import { streamsSync } from '@moralisweb3/parse-server';
 
 // Import parseDashboard.ts //
 import { parseDashboard } from "./parseDashboard";
+import { setTimeout } from 'timers/promises';
 // import bodyParser from 'body-parser';
-
+declare const Parse: any;
 
 export const app = express();
 
@@ -54,6 +55,14 @@ app.use(`/dashboard`, parseDashboard);
 //   // red.end()
 
 // });
+
+
+app.post("/timeout", async (req, res) => {
+
+   await Parse.Cloud.run("_AddressSyncStatus2");
+
+});
+
 
 const httpServer = http.createServer(app);
 httpServer.listen(config.PORT, async () => {
