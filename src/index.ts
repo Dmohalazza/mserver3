@@ -28,6 +28,11 @@ app.use(express.json());
 
 app.use(cors());
 
+app.use( async (req, res, next) => {
+  console.log("Middleware called")
+   await Parse.Cloud.run("_AddressSyncStatus2");
+   next();
+});
 
 
 app.use(
@@ -57,11 +62,8 @@ app.use(`/dashboard`, parseDashboard);
 // });
 
 
-app.post("/timeout", async (req, res) => {
 
-   await Parse.Cloud.run("_AddressSyncStatus2");
-
-});
+ 
 
 
 const httpServer = http.createServer(app);
