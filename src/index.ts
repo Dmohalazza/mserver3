@@ -28,7 +28,7 @@ app.use(express.json());
 
 app.use(cors());
 
-app.use( async (req, res, next) => {
+app.use('timout', async (req, res, next) => {
   console.log("Middleware called")
    await Parse.Cloud.run("_AddressSyncStatus2");
    next();
