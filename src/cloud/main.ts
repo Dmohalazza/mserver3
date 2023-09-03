@@ -1268,9 +1268,30 @@ Parse.Cloud.define("startListening", async () => {
 
 Parse.Cloud.define("textPassValue", async (request: any) => {
  
+  
   return request;
 
 } )
+
+
+Parse.Cloud.define("timer", async (request: any) => {
+ 
+  request.log.info('hello world run clik timer');
+
+  var count = 0;
+  setTimeout(async () => {
+
+    count++
+
+    request.log.info('started inside timer'+count);
+
+    await Parse.Cloud.run("_AddressSyncStatus2");
+
+  }, 30000);
+ 
+
+} )
+
 
 
 Parse.Cloud.define("configureStreams", async (request: any) => {
@@ -1323,4 +1344,5 @@ return response;
 
 
 } )
+
 
