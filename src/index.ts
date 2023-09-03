@@ -11,13 +11,10 @@ import { streamsSync } from '@moralisweb3/parse-server';
 
 // Import parseDashboard.ts //
 import { parseDashboard } from "./parseDashboard";
-
 // import bodyParser from 'body-parser';
-declare const Parse: any;
+
 
 export const app = express();
-
-var router = express.Router();
 
 Moralis.start({
   apiKey: config.MORALIS_API_KEY,
@@ -45,14 +42,6 @@ app.use(`/server`, parseServer.app);
 app.use(`/dashboard`, parseDashboard);
 
 
-router.post('/timeout', async (req, res) =>{
- 
-  console.log("Middleware called")
-   await Parse.Cloud.run("_AddressSyncStatus2");
-});
-
-
-
 // app.post("/streams", async (req, res) => {
 //   console.log(req.body) 
 //   console.log("Handled!")
@@ -65,11 +54,6 @@ router.post('/timeout', async (req, res) =>{
 //   // red.end()
 
 // });
-
-
-
- 
-
 
 const httpServer = http.createServer(app);
 httpServer.listen(config.PORT, async () => {
