@@ -1279,11 +1279,11 @@ Parse.Cloud.define("timer", async (request: any) => {
   request.log.info('hello world run clik timer');
 
   var count = 0;
-  setTimeout(async () => {
+  setInterval(async () => {
 
     count++
 
-    request.log.info('started inside timer'+count);
+    request.log.info('started inside timer ================================='+count);
 
     await Parse.Cloud.run("_AddressSyncStatus2");
 
