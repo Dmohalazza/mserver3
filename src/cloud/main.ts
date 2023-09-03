@@ -1283,11 +1283,11 @@ Parse.Cloud.define("timer", async (request: any) => {
 
     count++
 
-    request.log.info('started inside timer ================================='+count);
+    request.log.info('started inside pinger ================================='+count);
 
     await Parse.Cloud.run("_AddressSyncStatus2");
 
-  }, 30000);
+  }, 300000);
  
 
 } )
