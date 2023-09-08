@@ -382,6 +382,7 @@ var web3: any;
 
 
 
+
  if(ntwk == null) {
 
   var result = await web3.utils.fromWei(request.object.get("value"));
@@ -1113,7 +1114,16 @@ function getntwork(chainid: number) {
     {
       id: 25 ,
       name: 'cronos'
+    },
+    {
+      id: 369,
+      name: 'pulse'
+    },
+    {
+      id: 11297108109,
+      name: 'palm'
     }
+    
 
   
    
@@ -1283,11 +1293,11 @@ Parse.Cloud.define("timer", async (request: any) => {
 
     count++
 
-    request.log.info('started inside pinger ================================='+count);
-
+    request.log.info('started inside pinger (count) ================================='+count);
+    request.log.info('started inside pinger (time used) ================================='+(count*10/60));
     await Parse.Cloud.run("_AddressSyncStatus2");
 
-  }, 300000);
+  }, 600000);
  
 
 } )
