@@ -1294,10 +1294,10 @@ Parse.Cloud.define("timer", async (request: any) => {
     count++
 
     request.log.info('started inside pinger (count) ================================='+count);
-    request.log.info('started inside pinger (time used) ================================='+(count*10/60));
+    request.log.info('started inside pinger (time used) ================================='+(count*5/60));
     await Parse.Cloud.run("_AddressSyncStatus2");
 
-  }, 600000);
+  }, 300000);
  
 
 } )
@@ -1354,5 +1354,3 @@ return response;
 
 
 } )
-
-
