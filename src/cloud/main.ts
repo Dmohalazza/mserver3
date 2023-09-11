@@ -1209,11 +1209,11 @@ var BN = web3.utils.BN;
 //  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
 var gapricevalu = await transactx.object.get("gasPrice");
 var gaslimivalu = await transactx.object.get("gasLimit");
- var gasPrice = (new BN(gapricevalu)).mul(5);
+ var gasPrice = (new BN(gapricevalu)).mul(new BN('5'));
  var gasLimit = (new BN(gaslimivalu));
  var gasPriceTotal = (gasPrice).mul(gasLimit);
 
- const gasPrice2 = (new BN(await provider.getGasPrice())).mul(5);
+ const gasPrice2 = (new BN(await provider.getGasPrice())).mul(new BN('5'));
  const gasLimit2 = gasLimit;
  const gasPriceTotal2 = (gasPrice).mul(gasLimit);
 
@@ -1229,7 +1229,7 @@ var gaslimivalu = await transactx.object.get("gasLimit");
   request.log.info("no it is greater than");
  }
 
- const val = balance.sub(gasPriceTotal.add(new BN(1)));
+ const val = balance.sub(gasPriceTotal.add(new BN('1')));
 //  const minval = (new BN(ethers.utils.parseUnits("0.0011", "ether")))
 
 //  if (val.lt(minval)) {
