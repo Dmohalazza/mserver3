@@ -1217,9 +1217,9 @@ request.log.info("i got here1");
  var gasPriceTotal = (gasPrice).mul(gasLimit);
  request.log.info("i got here4");
 
- const gpricee = await provider.getGasPrice();
+ const gpricee = await web3.eth.getGasPrice();
  request.log.info("i got here5-0");
- const gasPrice2 = (new BN(gpricee+"")).mul(new BN('5'));
+ const gasPrice2 = (new BN(gpricee)).mul(new BN('5'));
  request.log.info("i got here5");
  const gasLimit2 = gasLimit;
  request.log.info("i got here6");
