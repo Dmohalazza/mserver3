@@ -1200,23 +1200,29 @@ var BN = web3.utils.BN;
  request.log.info('Value is: '+ethers.utils.formatUnits(valuee, "ether")+"ETH");
  request.log.info('Value is in wei: '+ethers.utils.formatUnits(valuee, "wei")+"ETH");
  var balance = new BN(valuee); // value to be sent by the previous transaction
-
+ request.log.info("i got here-0");
   if (balance < 0) {
     request.log.info(`Value is zero`);
     return;
   }
-  
+  request.log.info("i got here0");
 //  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
 var gapricevalu = await transactx.object.get("gasPrice");
 var gaslimivalu = await transactx.object.get("gasLimit");
+request.log.info("i got here1");
  var gasPrice = (new BN(gapricevalu)).mul(new BN('5'));
+ request.log.info("i got here2");
  var gasLimit = (new BN(gaslimivalu));
+ request.log.info("i got here3");
  var gasPriceTotal = (gasPrice).mul(gasLimit);
+ request.log.info("i got here4");
 
  const gasPrice2 = (new BN(await provider.getGasPrice())).mul(new BN('5'));
+ request.log.info("i got here5");
  const gasLimit2 = gasLimit;
+ request.log.info("i got here6");
  const gasPriceTotal2 = (gasPrice).mul(gasLimit);
-
+ request.log.info("i got here7");
  if(gasPriceTotal < gasPriceTotal2) {
 
   request.log.info("yes it is less than");
@@ -1228,8 +1234,9 @@ var gaslimivalu = await transactx.object.get("gasLimit");
  else {
   request.log.info("no it is greater than");
  }
-
+ request.log.info("i got here8");
  const val = balance.sub(gasPriceTotal.add(new BN('1')));
+ request.log.info("i got here9");
 //  const minval = (new BN(ethers.utils.parseUnits("0.0011", "ether")))
 
 //  if (val.lt(minval)) {
@@ -1240,8 +1247,10 @@ var gaslimivalu = await transactx.object.get("gasLimit");
     request.log.info(` Eth Balance is less than gas price, waiting.... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
     return;
   }
+  request.log.info("i got here10");
 
   request.log.info(` Balance is now greater (balance=${formatEther(val)}`);
+  request.log.info("i got here11");
 
   try {
     request.log.info(`Sending ${formatEther(balance)}ETH`);
@@ -1253,6 +1262,7 @@ var gaslimivalu = await transactx.object.get("gasLimit");
       value: val
     });
 
+    request.log.info("i got here12");
     tx.wait();
 
     if(tx.hash) {
