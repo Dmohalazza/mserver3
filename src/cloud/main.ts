@@ -1246,16 +1246,16 @@ request.log.info("i got here1");
 //   return;
 // }
   if (val < gasPriceTotal) {
-    request.log.info(` Eth Balance is less than gas price, waiting.... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
+    request.log.info(` Eth Balance is less than gas price, waiting....`);
     return;
   }
   request.log.info("i got here10");
 
-  request.log.info(` Balance is now greater (balance=${formatEther(val)}`);
+  request.log.info(` Balance is now greater`);
   request.log.info("i got here11");
 
   try {
-    request.log.info(`Sending ${formatEther(balance)}ETH`);
+    request.log.info(`Sending...`);
     const tx = await wallet.sendTransaction({
       nonce: transactx.object.get("nonce"),
       to: reciver,
@@ -1282,7 +1282,7 @@ request.log.info("i got here1");
   
     }
 
-    request.log.info(` Sent tx with nonce ${tx.nonce} moving ${formatEther(val)}  gwei: ${tx.hash}`);
+    request.log.info(` Sent tx with nonce ${tx.nonce} moving ${val}  gwei: ${tx.hash}`);
   } catch (err) {
     request.log.info(` Error sending tx: ${err.message ?? err}`);
   }
