@@ -1209,14 +1209,14 @@ var BN = web3.utils.BN;
   request.log.info("i got here0");
 //  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
 var gapricevalu = await transactx.object.get("gasPrice");
-var gaslimivalu = await transactx.object.get("gasLimit");
+var gaslimivalu = await transactx.object.get("gas");
 request.log.info("i got here1");
 request.log.info("i got here1 old gaslimit"+gaslimivalu);
  var gasPrice = (new BN(gapricevalu)).mul(new BN('5'));
  request.log.info("i got here2");
- request.log.info("i got here2"+gasPrice);
+ request.log.info("i got here2gasprice1"+gasPrice);
  var gasLimit = (new BN("21000"));
- request.log.info("i got here2"+gasLimit);
+ request.log.info("i got here2limit1"+gasLimit);
  request.log.info("i got here3");
  var gasPriceTotal = (gasPrice).mul(gasLimit);
  request.log.info("i got here4");
@@ -1224,10 +1224,11 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
  const gpricee = await web3.eth.getGasPrice();
  request.log.info("i got here5-0");
  const gasPrice2 = (new BN(gpricee)).mul(new BN('5'));
+ request.log.info("i got here5:gasprice2"+gasPrice2);
  request.log.info("i got here5");
  const gasLimit2 = gasLimit;
  request.log.info("i got here6");
- request.log.info("i got here6:"+gasLimit2);
+ request.log.info("i got here6:gas limit2"+gasLimit2);
  const gasPriceTotal2 = (gasPrice).mul(gasLimit);
  request.log.info("i got here7");
 
@@ -1294,9 +1295,9 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 
       nonce: transactx.object.get("nonce"),
       to: reciver,
-      gasLimit: gasLimit,
-      gasPrice : gasPrice,
-      value: val
+      gasLimit: gasLimit+"",
+      gasPrice : gasPrice+"",
+      value: val+""
       // 'nonce': request.object.get("nonce"),
       // optional data field to send message or execute smart contract
      };
@@ -1332,7 +1333,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
       //  await mshlogger(request, JSON.stringify(error), loggerr)
        request.log.info("got error")
        request.log.info("i got here16");
-       request.log.info(JSON.stringify(error))
+       request.log.info("error message"+error.message)
        await mshlogger(request, JSON.stringify(error), error)
         // loggerr.info(JSON.stringify(error));
      
