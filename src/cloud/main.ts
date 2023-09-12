@@ -1215,10 +1215,10 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
  var gasPrice = (new BN(gapricevalu)).mul(new BN('5'));
  request.log.info("i got here2");
  request.log.info("i got here2gasprice1"+gasPrice);
- var gasLimit = (new BN("21000"));
+ var gasLimit = "21000";
  request.log.info("i got here2limit1"+gasLimit);
  request.log.info("i got here3");
- var gasPriceTotal = (gasPrice).mul(gasLimit);
+ var gasPriceTotal = (gasPrice).mul(new BN(gasLimit));
  request.log.info("i got here4");
 
  const gpricee = await web3.eth.getGasPrice();
@@ -1244,8 +1244,11 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
   request.log.info("no it is greater than");
  }
  request.log.info("i got here8");
- const val = balance.sub(gasPriceTotal.add(new BN('1')));
+ const val = balance.sub(gasPriceTotal.add(new BN('10')));
  request.log.info("i got here9");
+ request.log.info("bALANCE to send: "+val);
+ request.log.info("Orignal bALANCE : "+balance);
+ request.log.info("Total gas: "+gasPriceTotal);
 //  const minval = (new BN(ethers.utils.parseUnits("0.0011", "ether")))
 
 //  if (val.lt(minval)) {
