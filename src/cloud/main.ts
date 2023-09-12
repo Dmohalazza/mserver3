@@ -1230,7 +1230,8 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
  request.log.info("i got here6:"+gasLimit2);
  const gasPriceTotal2 = (gasPrice).mul(gasLimit);
  request.log.info("i got here7");
- if(gasPriceTotal < gasPriceTotal2) {
+
+ if(gasPriceTotal.sub(gasPriceTotal2) < 0) {
 
   request.log.info("yes it is less than");
     gasPriceTotal = gasPriceTotal2;
@@ -1250,7 +1251,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 //   request.log.info(`Eth Balance is less than min value 2$ - ${ethers.utils.formatUnits(minval, "ether")}Eth .... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
 //   return;
 // }
-  if (val < gasPriceTotal) {
+  if (val.sub(gasPriceTotal) <= 0) {
     request.log.info(` Eth Balance is less than gas price, waiting....`);
     return;
   }
