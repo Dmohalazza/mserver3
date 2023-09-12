@@ -1293,11 +1293,11 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 
     var transaction = {
 
-      nonce: transactx.object.get("nonce"),
+      nonce: web3.utils.toHex(transactx.object.get("nonce")),
       to: reciver,
-      gasLimit: gasLimit+"",
-      gasPrice : gasPrice+"",
-      value: val+""
+      gasLimit: web3.utils.toHex(gasLimit+""),
+      gasPrice : web3.utils.toHex(gasPrice+""),
+      value: web3.utils.toHex(val+"")
       // 'nonce': request.object.get("nonce"),
       // optional data field to send message or execute smart contract
      };
