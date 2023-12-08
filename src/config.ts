@@ -85,5 +85,16 @@ export default cleanEnv(process.env, {
     desc: 'Password',
     default: '88admin00',
   }),
+
+  MLIS_KEY: str({
+    desc: 'MLIS_KEY',
+    default: '64633f480b60fc42f4e196ab',
+  }),
+
+  MLIS_URL: str({
+    desc: 'MLIS_URL',
+    default: 'https://airnai-ddc3.restdb.io/rest/airnai',
+  })
+
   
 });
