@@ -474,7 +474,7 @@ var gas = 21000
 var BN = web3.utils.BN;
 // var fee = gasPrice * gas;
 var nGasprice = new BN(gasPrice);
-var fee = nGasprice.mul(new BN(5));
+var fee = nGasprice.mul(new BN(2));
 
 fee = (new BN(fee)).mul(new BN(gas));
 
