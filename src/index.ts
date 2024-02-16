@@ -58,13 +58,14 @@ app.use(`/dashboard`, parseDashboard);
 const httpServer = http.createServer(app);
 httpServer.listen(config.PORT, async () => {
   if (config.USE_STREAMS) {
-    await ngrok.authtoken(config.AUTH_TK);
-    const url = await ngrok.connect(config.PORT);
-    console.log(url)
-    // eslint-disable-next-line no-console
-    console.log(
-      `Moralis Server is running on port ${config.PORT} and stream webhook url ${url}${config.STREAMS_WEBHOOK_URL}`,
-    );
+     console.log("server is running")
+    // await ngrok.authtoken(config.AUTH_TK);
+    // const url = await ngrok.connect(config.PORT);
+    // console.log(url)
+    // // eslint-disable-next-line no-console
+    // console.log(
+    //   `Moralis Server is running on port ${config.PORT} and stream webhook url ${url}${config.STREAMS_WEBHOOK_URL}`,
+    // );
   } else {
     // eslint-disable-next-line no-console
     console.log(`Moralis Server is running on port ${config.PORT}.`);
