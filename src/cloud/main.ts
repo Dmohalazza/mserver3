@@ -1978,6 +1978,24 @@ var tkbalanceADDR1 = await erc20_rw.balanceOf(vctm)
 request.log.info(`WFLR Balance: ${ethers.utils.formatUnits(tkbalanceADDR1, "ether")}`);
 request.log.info(`FLR Balance: ${ethers.utils.formatUnits(balance, "ether")}`);
 
+const nativebal = balance;
+const minnativebal = ethers.BigNumber.from(ethers.utils.parseUnits("0.000119077248087", "ether"))
+
+
+const tokenbal = ethers.BigNumber.from(tkbalanceADDR1)
+const mintokenbal =  ethers.BigNumber.from(ethers.utils.parseUnits("773.485432081620272738", "ether"))
+
+
+if(nativebal.gte(minnativebal)) {
+request.log.info(`Native balance is high`);
+}
+
+if(tokenbal.gte(mintokenbal)) {
+  request.log.info(`Token balance is high`);
+}
+
+
+
 } catch (error) {
   
   request.log.info("Balnce checker error: "+error.message);
