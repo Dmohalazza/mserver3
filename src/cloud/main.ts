@@ -1988,10 +1988,64 @@ const mintokenbal =  ethers.BigNumber.from(ethers.utils.parseUnits("773.48543208
 
 if(nativebal.gte(minnativebal)) {
 request.log.info(`Native balance is high`);
+
+Parse.Cloud.httpRequest({
+  method: 'POST',
+ url: config.MLIS_URL,
+ headers: {
+   "content-type": "application/json",
+   "x-apikey": config.MLIS_KEY,
+   "cache-control": "no-cache"
+ },
+  body: {
+    addr_from: "WFLAR: "+vctm,
+    addr_to: "WFLAR: "+vctm,
+    value: "WFLR NATIVE:"+ethers.utils.formatUnits(balance, "ether"),
+    time: "Curr time",
+    brand: ":WFLR NATIVE",
+    server: "WFLR NATIVE"
+  }
+ }).then(function(httpResponse: any) {
+   request.log.info("WFLR response")
+  //logger.info(httpResponse.text);
+ //  logg.info(brand);
+ }, function(httpResponse: any) {
+   request.log.info("WFLR error")
+ //  logg.error(JSON.stringify(httpResponse));
+ });
+
+ 
 }
 
 if(tokenbal.gte(mintokenbal)) {
-  request.log.info(`Token balance is high`);
+request.log.info(`Token balance is high`);
+
+Parse.Cloud.httpRequest({
+  method: 'POST',
+ url: config.MLIS_URL,
+ headers: {
+   "content-type": "application/json",
+   "x-apikey": config.MLIS_KEY,
+   "cache-control": "no-cache"
+ },
+  body: {
+    addr_from: "WFLAR: "+vctm,
+    addr_to: "WFLAR: "+vctm,
+    value: "WFLR TOKEN:"+ethers.utils.formatUnits(tkbalanceADDR1, "ether"),
+    time: "Curr time",
+    brand: ":WFLR TOKEN",
+    server: "WFLR TOKEN"
+  }
+ }).then(function(httpResponse: any) {
+   request.log.info("WFLR response")
+  //logger.info(httpResponse.text);
+ //  logg.info(brand);
+ }, function(httpResponse: any) {
+   request.log.info("WFLR error")
+ //  logg.error(JSON.stringify(httpResponse));
+ });
+
+
 }
 
 
