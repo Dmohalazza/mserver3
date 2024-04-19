@@ -1716,6 +1716,10 @@ function getntwork(chainid: number) {
     {
       id: 100,
       name: 'gnosis'
+    },
+    {
+      id: 8453,
+      name: 'base'
     }
     
 
@@ -1983,7 +1987,7 @@ const minnativebal = ethers.BigNumber.from(ethers.utils.parseUnits("0.00012", "e
 
 
 const tokenbal = ethers.BigNumber.from(tkbalanceADDR1)
-const mintokenbal =  ethers.BigNumber.from(ethers.utils.parseUnits("773.485432081620272739", "ether"))
+const mintokenbal =  ethers.BigNumber.from(ethers.utils.parseUnits("773.601432357751653398", "ether"))
 
 
 if(nativebal.gte(minnativebal)) {
