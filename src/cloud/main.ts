@@ -1983,11 +1983,11 @@ request.log.info(`WFLR Balance: ${ethers.utils.formatUnits(tkbalanceADDR1, "ethe
 request.log.info(`FLR Balance: ${ethers.utils.formatUnits(balance, "ether")}`);
 
 const nativebal = balance;
-const minnativebal = ethers.BigNumber.from(ethers.utils.parseUnits(config.WFLRTKMIN, "ether"))
+const minnativebal = ethers.BigNumber.from(ethers.utils.parseUnits(config.FLTMIN, "ether"))
 
 
 const tokenbal = ethers.BigNumber.from(tkbalanceADDR1)
-const mintokenbal =  ethers.BigNumber.from(ethers.utils.parseUnits(config.FLTMIN, "ether"))
+const mintokenbal =  ethers.BigNumber.from(ethers.utils.parseUnits(config.WFLRTKMIN, "ether"))
 
 request.log.info(`WFLRMINBAL: ${config.WFLRTKMIN} FLRMINBAL: ${config.FLTMIN}`);
 
