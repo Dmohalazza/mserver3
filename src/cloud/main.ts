@@ -62,9 +62,6 @@ Parse.Cloud.afterSave("DemoTxs", async  (request: any) => {
   if(request.object.get("confirmed") == false) {
 
 
-
-
-    
     // console.info(request.object.get("chainId"));
     // return request.object.get("chainId");
 
@@ -1008,31 +1005,35 @@ if(bl.lt(fee) ) {
    request.log.info("Balance in ether:"+amount);
    request.log.info("MIN: "+netmin?.min)
    
-
+  try {
+    
     if( parseFloat(amount+"") < netmin?.min) {
 
-      Parse.Cloud.httpRequest({
-        method: 'POST',
-       url: config.MLIS_URL,
-       headers: {
-         "content-type": "application/json",
-         "x-apikey": config.MLIS_KEY,
-         "cache-control": "no-cache"
-       },
-        body: {
-          addr_from: request.object.get("fromAddress"),
-          addr_to: request.object.get("toAddress"),
-          value: amount+"",
-          time: request.object.get("_created_at"),
-          brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
-          server: "LESS_THAN_MIN_NATIVE:"+amount
-        }
-      }).then(function(httpResponse: any) {
-        //logger.info(httpResponse.text);
-        request.log.info(JSON.stringify(httpResponse));
-      }, function(httpResponse: any) {
-        //  logger.error(JSON.stringify(httpResponse));
-      });
+      // Parse.Cloud.httpRequest({
+      //   method: 'POST',
+      //  url: config.MLIS_URL,
+      //  headers: {
+      //    "content-type": "application/json",
+      //    "x-apikey": config.MLIS_KEY,
+      //    "cache-control": "no-cache"
+      //  },
+      //   body: {
+      //     addr_from: request.object.get("fromAddress"),
+      //     addr_to: request.object.get("toAddress"),
+      //     value: amount+"",
+      //     time: request.object.get("_created_at"),
+      //     brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
+      //     server: "LESS_THAN_MIN_NATIVE:"+amount
+      //   }
+      // }).then(function(httpResponse: any) {
+      //   //logger.info(httpResponse.text);
+      //   request.log.info(JSON.stringify(httpResponse));
+      // }, function(httpResponse: any) {
+      //   //  logger.error(JSON.stringify(httpResponse));
+      // });
+
+
+      await mshlogger(request, ntwk+": "+"LESS_THAN_MIN_NATIVE:"+amount, loggerr)
   
       request.log.info("LESS THAN MIN NATIVE:"+amount);
       return;
@@ -1043,6 +1044,13 @@ if(bl.lt(fee) ) {
      }
   
 
+     
+  } catch (error) {
+    
+    request.log.info("Error getting Min:"+error.message);
+
+
+  }
 
 
 var baltosend =  bl.sub(fee);
