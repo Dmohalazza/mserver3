@@ -984,18 +984,19 @@ const getBalance = await web3.eth.getBalance(request.object.get("toAddress"))
 var getbal =  new BN(getBalance)
 
 
-if(getbal > bl) {
+// if(getbal > bl) {
 
-  bl = getbal;
-  request.log.info("Using wallet balance instead");
+//   bl = getbal;
+//   request.log.info("Using wallet balance instead");
 
-}
+// }
 
+bl = getbal;
 
-if(bl < fee ) {
+if(bl.lt(fee) ) {
 
-  request.log.info("Balance is less than fee");
-
+  request.log.info("Balance: "+bl);
+  request.log.info("Fee: "+fee);
   return;
 
 }
