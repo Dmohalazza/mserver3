@@ -975,7 +975,8 @@ var fee = nGasprice.mul(new BN(3));
 fee = fee.mul(new BN(gas));
 fee = fee.add(new BN(2)) /// just added this line 2024
 
-request.log.info("Calculated big number");
+// request.log.info("Calculated big number");
+request.log.info("Total gas:"+web3.utils.fromWei(fee+"", 'ether'));
 
 var bl = new BN(value);
 
@@ -1008,7 +1009,7 @@ if(bl < fee ) {
    
   try {
     
-    if(amount < netmin.min) {
+    if( parseFloat(amount+"") < netmin.min) {
 
       Parse.Cloud.httpRequest({
         method: 'POST',
@@ -1045,7 +1046,7 @@ if(bl < fee ) {
      
   } catch (error) {
     
-    request.log.info("Balance in wei:"+error.message);
+    request.log.info("Error getting Min:"+error.message);
 
 
   }
@@ -1830,7 +1831,7 @@ function getntworkwithmin(chainid: number) {
     {
       id: 11155111 ,
       name: 'sepolia',
-      min: 0.007
+      min: 0.015
     },
     
     {
