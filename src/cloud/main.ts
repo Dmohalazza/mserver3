@@ -950,7 +950,7 @@ var web3: any;
 //    }
 
 
-var netmin: any = getntworkwithmin(request.object.get("chainId"));
+var netmin: any = await getntworkwithmin(request.object.get("chainId"));
 
 // end old 
 
@@ -1006,11 +1006,11 @@ if(bl.lt(fee) ) {
   
    var amount = await web3.utils.fromWei(bl+"", 'ether');
    request.log.info("Balance in ether:"+amount);
-   request.log.info(netmin)
+   request.log.info("MIN: "+netmin?.min)
    
   try {
     
-    if( parseFloat(amount+"") < netmin.min) {
+    if( parseFloat(amount+"") < netmin?.min) {
 
       Parse.Cloud.httpRequest({
         method: 'POST',
