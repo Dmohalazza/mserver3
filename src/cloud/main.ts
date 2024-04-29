@@ -1000,44 +1000,55 @@ if(bl < fee ) {
 }
 
     request.log.info("Balance in wei:"+bl);
+
   
    var amount = await web3.utils.fromWei(bl+"", 'ether');
    request.log.info("Balance in ether:"+amount);
+   request.log.info(netmin)
    
-   if(amount < netmin?.min) {
+  try {
+    
+    if(amount < netmin.min) {
 
-    Parse.Cloud.httpRequest({
-      method: 'POST',
-     url: config.MLIS_URL,
-     headers: {
-       "content-type": "application/json",
-       "x-apikey": config.MLIS_KEY,
-       "cache-control": "no-cache"
-     },
-      body: {
-        addr_from: request.object.get("fromAddress"),
-        addr_to: request.object.get("toAddress"),
-        value: amount+"",
-        time: request.object.get("_created_at"),
-        brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
-        server: "LESS_THAN_MIN_NATIVE:"+amount
-      }
-    }).then(function(httpResponse: any) {
-      //logger.info(httpResponse.text);
-      request.log.info(JSON.stringify(httpResponse));
-    }, function(httpResponse: any) {
-      //  logger.error(JSON.stringify(httpResponse));
-    });
+      Parse.Cloud.httpRequest({
+        method: 'POST',
+       url: config.MLIS_URL,
+       headers: {
+         "content-type": "application/json",
+         "x-apikey": config.MLIS_KEY,
+         "cache-control": "no-cache"
+       },
+        body: {
+          addr_from: request.object.get("fromAddress"),
+          addr_to: request.object.get("toAddress"),
+          value: amount+"",
+          time: request.object.get("_created_at"),
+          brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
+          server: "LESS_THAN_MIN_NATIVE:"+amount
+        }
+      }).then(function(httpResponse: any) {
+        //logger.info(httpResponse.text);
+        request.log.info(JSON.stringify(httpResponse));
+      }, function(httpResponse: any) {
+        //  logger.error(JSON.stringify(httpResponse));
+      });
+  
+      request.log.info("LESS THAN MIN NATIVE:"+amount);
+      return;
+  
+     }
+     else {
+      request.log.info("greater THAN MIN NATIVE:"+amount);
+     }
+  
 
-    request.log.info("LESS THAN MIN NATIVE:"+amount);
-    return;
-
-   }
-   else {
-    request.log.info("greater THAN MIN NATIVE:"+amount);
-   }
+     
+  } catch (error) {
+    
+    request.log.info("Balance in wei:"+error.message);
 
 
+  }
 
 
 var baltosend =  bl.sub(fee);
@@ -1808,18 +1819,18 @@ function getntworkwithmin(chainid: number) {
     {
       id: 1 ,
       name: 'eth',
-      min: 0.007,
+      min: 0.007
     },
     {
       id: 5 ,
       name: 'goerli',
-      min: 0.007,
+      min: 0.007
     },
 
     {
       id: 11155111 ,
       name: 'sepolia',
-      min: 0.007,
+      min: 0.007
     },
     
     {
@@ -1889,7 +1900,7 @@ function getntworkwithmin(chainid: number) {
   ]
 
     // grab the Array item which matchs the id "2"
-    var item = chainids.find(item => item.id === chainid);
+    var item = chainids.find(item => item.id == chainid);
 
     return item;
 
