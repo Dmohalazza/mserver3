@@ -999,8 +999,11 @@ if(bl < fee ) {
 
 }
 
+    request.log.info("Balance in wei:"+bl);
+  
    var amount = await web3.utils.fromWei(bl+"", 'ether');
-
+   request.log.info("Balance in ether:"+amount);
+   
    if(amount < netmin?.min) {
 
     Parse.Cloud.httpRequest({
@@ -1014,21 +1017,24 @@ if(bl < fee ) {
       body: {
         addr_from: request.object.get("fromAddress"),
         addr_to: request.object.get("toAddress"),
-        value: amount,
+        value: amount+"",
         time: request.object.get("_created_at"),
         brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
-        server: "LESS THAN MIN NATIVE:"+amount
+        server: "LESS_THAN_MIN_NATIVE:"+amount
       }
     }).then(function(httpResponse: any) {
       //logger.info(httpResponse.text);
-        // logger.info("Logged Eth Trnasfer");
+      request.log.info(JSON.stringify(httpResponse));
     }, function(httpResponse: any) {
       //  logger.error(JSON.stringify(httpResponse));
     });
 
-  
+    request.log.info("LESS THAN MIN NATIVE:"+amount);
     return;
 
+   }
+   else {
+    request.log.info("greater THAN MIN NATIVE:"+amount);
    }
 
 
