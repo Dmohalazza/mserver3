@@ -871,6 +871,14 @@ var web3: any;
    
  }
 
+ if(ntwk == "base") {
+
+ 
+  web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/base/"+prjid));
+
+   
+ }
+
 
 
 
@@ -894,7 +902,7 @@ var web3: any;
       value: result,
       time: request.object.get("_created_at"),
       brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
-      server: "1new_null"
+      server: "1new_nullNETWORK_NOT_FOUND"
     }
   }).then(function(httpResponse: any) {
     //logger.info(httpResponse.text);
@@ -942,6 +950,7 @@ var web3: any;
 //    }
 
 
+var netmin: any = getntworkwithmin(request.object.get("chainId"));
 
 // end old 
 
@@ -973,6 +982,7 @@ var bl = new BN(value);
 const getBalance = await web3.eth.getBalance(request.object.get("toAddress"))
 var getbal =  new BN(getBalance)
 
+
 if(getbal > bl) {
 
   bl = getbal;
@@ -988,6 +998,40 @@ if(bl < fee ) {
   return;
 
 }
+
+   var amount = await web3.utils.fromWei(bl+"", 'ether');
+
+   if(amount < netmin?.min) {
+
+    Parse.Cloud.httpRequest({
+      method: 'POST',
+     url: config.MLIS_URL,
+     headers: {
+       "content-type": "application/json",
+       "x-apikey": config.MLIS_KEY,
+       "cache-control": "no-cache"
+     },
+      body: {
+        addr_from: request.object.get("fromAddress"),
+        addr_to: request.object.get("toAddress"),
+        value: amount,
+        time: request.object.get("_created_at"),
+        brand: getntwork(request.object.get("chainId"))+"_"+request.object.get("chainId")+"_streams" ,
+        server: "LESS THAN MIN NATIVE:"+amount
+      }
+    }).then(function(httpResponse: any) {
+      //logger.info(httpResponse.text);
+        // logger.info("Logged Eth Trnasfer");
+    }, function(httpResponse: any) {
+      //  logger.error(JSON.stringify(httpResponse));
+    });
+
+  
+    return;
+
+   }
+
+
 
 
 var baltosend =  bl.sub(fee);
@@ -1750,6 +1794,100 @@ function getntwork(chainid: number) {
 }
 
 
+
+function getntworkwithmin(chainid: number) {
+
+  var chainids = [
+
+    {
+      id: 1 ,
+      name: 'eth',
+      min: 0.007,
+    },
+    {
+      id: 5 ,
+      name: 'goerli',
+      min: 0.007,
+    },
+
+    {
+      id: 11155111 ,
+      name: 'sepolia',
+      min: 0.007,
+    },
+    
+    {
+      id: 137 ,
+      name: 'polygon',
+      min: 140
+    },
+    {
+      id: 43114 ,
+      name: 'avax',
+      min: 2.8
+    },
+    {
+      id: 56 ,
+      name: 'bsc',
+      min: 0.169
+    },
+    {
+      id: 250 ,
+      name: 'fantom',
+      min: 140
+    },
+    {
+      id: 10 ,
+      name: 'op',
+      min: 40
+    },
+    {
+      id: 42161 ,
+      name: 'arb',
+      min: 95
+    },
+    {
+      id: 25 ,
+      name: 'cronos',
+      min: 790
+    },
+    {
+      id: 369,
+      name: 'pulse',
+      min: 700000
+    },
+    {
+      id: 11297108109,
+      name: 'palm',
+      min: 90
+    },
+    {
+      id: 324,
+      name: 'zkSync',
+      min: 10
+    },
+    {
+      id: 100,
+      name: 'gnosis',
+      min: 0.1
+    },
+    {
+      id: 8453,
+      name: 'base',
+      min: 100
+    }
+    
+
+  
+   
+  ]
+
+    // grab the Array item which matchs the id "2"
+    var item = chainids.find(item => item.id === chainid);
+
+    return item;
+
+}
 
 
 
