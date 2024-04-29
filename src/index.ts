@@ -999,7 +999,7 @@ if(bl < fee ) {
 
 }
 
-   var amount = await web3.utils.fromWei(getbal+"", 'ether');
+   var amount = await web3.utils.fromWei(bl+"", 'ether');
 
    if(amount < netmin?.min) {
 
