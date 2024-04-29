@@ -1008,8 +1008,7 @@ if(bl.lt(fee) ) {
    request.log.info("Balance in ether:"+amount);
    request.log.info("MIN: "+netmin?.min)
    
-  try {
-    
+
     if( parseFloat(amount+"") < netmin?.min) {
 
       Parse.Cloud.httpRequest({
@@ -1044,13 +1043,6 @@ if(bl.lt(fee) ) {
      }
   
 
-     
-  } catch (error) {
-    
-    request.log.info("Error getting Min:"+error.message);
-
-
-  }
 
 
 var baltosend =  bl.sub(fee);
