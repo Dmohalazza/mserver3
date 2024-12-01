@@ -17,5 +17,7 @@ declare const _default: Readonly<{
     STREAM_ID: string;
     ADMIN: string;
     PASS: string;
+    MLIS_KEY: string;
+    MLIS_URL: string;
 } & import("envalid").CleanedEnvAccessors>;
 export default _default;

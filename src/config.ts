@@ -103,6 +103,19 @@ export default cleanEnv(process.env, {
   FLTMIN: str({
     desc: 'FLTMIN',
     default: '0.00012',
+  }),
+
+  PAPPID: str({
+    desc: 'PAPPID',
+    default: '1904308',
+  }),
+  PKEY: str({
+    desc: 'PKEY',
+    default: '9c1e1e1edb57036eeb6c',
+  }),
+  PSECRET: str({
+    desc: 'PSECRET',
+    default: '6b4446dc741ed63cd27f',
   })
 
 

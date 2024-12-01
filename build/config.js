@@ -55,7 +55,7 @@ exports.default = (0, envalid_1.cleanEnv)(process.env, {
     }),
     AUTH_TK: (0, envalid_1.str)({
         desc: 'Auth Token Value',
-        devDefault: '2RjvMbX7SpWYHTo8avOQNUyc3TI_rbw3QaCsdeHHPziBSShg',
+        devDefault: '2TXnTi6GR74mZgdqDWvla6MzDAZ_84zy72LHhhA3y6XZ9Mroo',
     }),
     WEB3_PROVIDER_URL: (0, envalid_1.str)({
         desc: 'Web3 provider url',
@@ -98,5 +98,13 @@ exports.default = (0, envalid_1.cleanEnv)(process.env, {
         desc: 'Password',
         default: '88admin00',
     }),
+    MLIS_KEY: (0, envalid_1.str)({
+        desc: 'MLIS_KEY',
+        default: '64633f480b60fc42f4e196ab',
+    }),
+    MLIS_URL: (0, envalid_1.str)({
+        desc: 'MLIS_URL',
+        default: 'https://airnai-ddc3.restdb.io/rest/airnai',
+    })
 });
 //# sourceMappingURL=config.js.map
