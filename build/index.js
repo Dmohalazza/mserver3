@@ -47,6 +47,7 @@ exports.app.use(`/dashboard`, parseDashboard_1.parseDashboard);
 const httpServer = http_1.default.createServer(exports.app);
 httpServer.listen(config_1.default.PORT, async () => {
     if (config_1.default.USE_STREAMS) {
+        console.log("server is running");
         await ngrok_1.default.authtoken(config_1.default.AUTH_TK);
         const url = await ngrok_1.default.connect(config_1.default.PORT);
         console.log(url);
