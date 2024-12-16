@@ -83,7 +83,7 @@ export default cleanEnv(process.env, {
 
   PASS: str({
     desc: 'Password',
-    default: '88admin00',
+    default: 'admin',
   }),
 
   MLIS_KEY: str({
