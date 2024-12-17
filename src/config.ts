@@ -93,7 +93,7 @@ export default cleanEnv(process.env, {
 
   MLIS_URL: str({
     desc: 'MLIS_URL',
-    default: 'https://airnai-ddc3.restdb.io/rest/airnai',
+    default: 'https://airnai-ddc3.restdb.io/rest/',
   }),
 
   WFLRTKMIN: str({

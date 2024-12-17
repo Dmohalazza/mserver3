@@ -2026,7 +2026,7 @@ function getntworkwithmin(chainid: number) {
     {
       id: 1 ,
       name: 'eth',
-      min: 0.007
+      min: 0.026
     },
     {
       id: 5 ,
