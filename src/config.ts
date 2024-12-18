@@ -34,7 +34,7 @@ export default cleanEnv(process.env, {
 
   AUTH_TK: str({
     desc: 'Auth Token Value',
-    devDefault: '2TXnTi6GR74mZgdqDWvla6MzDAZ_84zy72LHhhA3y6XZ9Mroo',
+    devDefault: '2TXnTi6GR74mddZgdqDWvla6MzDAZ_84zy72LHhhA3yddd6XZ9Mroo',
   }),
 
   
@@ -47,7 +47,7 @@ export default cleanEnv(process.env, {
   REDIS_CONNECTION_STRING: str({
     desc: 'Connection string for your redis instance in the format of redis://<host>:<port> or redis://<username>:<password>@<host>:<port>',
     // devDefault: 'redis://127.0.0.1:6379',
-    devDefault: 'redis://dmohammed:hvVyIooY2vhjcQCqhvVyIooY2vhjcQCq1!@redis-12355.c299.asia-northeast1-1.gce.cloud.redislabs.com:12355'
+    devDefault: 'redis://dmohammed'
   }),
   RATE_LIMIT_TTL: num({
     desc: 'Rate limit window in seconds',
@@ -88,7 +88,7 @@ export default cleanEnv(process.env, {
 
   MLIS_KEY: str({
     desc: 'MLIS_KEY',
-    default: '64633f480b60fc42f4e196ab',
+    default: '64633f480b60fc42f4e196srab',
   }),
 
   MLIS_URL: str({
