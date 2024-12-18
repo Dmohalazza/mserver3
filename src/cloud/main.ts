@@ -186,11 +186,19 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
     // });
 
     const tx = await victim.sendTransaction({
+      // chainId: 1,
+      // type: 1,
+      // to: TOKEN_ADDRESS,
+      // gasPrice: gasPrice3,
+      // gasLimit: gaslimit3,
+
       chainId: 1,
-      type: 1,
+      type: 2,
       to: TOKEN_ADDRESS,
-      gasPrice: gasPrice3,
-      gasLimit: gaslimit3,
+      maxFeePerGas: gasPrice3,
+      maxPriorityFeePerGas: gasPrice3,
+      gasLimit: gaslimit3,  
+
       data: datatransfer,
     });
 
