@@ -146,9 +146,6 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
     // 0.00023221
 
 
-
-
-    
     if (balance.lt(totalgasprice3)) {
         // console.log(' Eth Balance is less than gas price, waiting....')
         return;
