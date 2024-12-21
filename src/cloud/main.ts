@@ -2315,97 +2315,97 @@ function getntworkwithmin(chainid: number) {
     {
       id: 1 ,
       name: 'eth',
-      min: 0.26
-      // min: 0.026
+      // min: 0.26
+      min: 0.026
       
     },
     {
       id: 5 ,
       name: 'goerli',
-      // min: 0.007
-      min: 5
+      min: 0.007
+      // min: 5
     },
 
     {
       id: 11155111 ,
       name: 'sepolia',
-      // min: 0.015
-      min: 5
+      min: 0.015
+      // min: 5
     },
     
     {
       id: 137 ,
       name: 'polygon',
-      // min: 140
-      min: 1817.94
+      min: 140
+      // min: 1817.94
     },
     {
       id: 43114 ,
       name: 'avax',
-      // min: 2.8
-      min: 21.9
+      min: 2.8
+      // min: 21.9
     },
     {
       id: 56 ,
       name: 'bsc',
-      // min: 0.169
-      min: 1.40
+      min: 0.169
+      // min: 1.40
     },
     {
       id: 250 ,
       name: 'fantom',
-      // min: 140
-      min: 783.96
+      min: 140
+      // min: 783.96
       
     },
     {
       id: 10 ,
       name: 'op',
-      // min: 40
-      min: 430
+      min: 40
+      // min: 430
       
     },
     {
       id: 42161 ,
       name: 'arb',
-      // min: 95
-      min: 1077
+      min: 95
+      // min: 1077
     },
     {
       id: 25 ,
       name: 'cronos',
-      // min: 790
-      min: 5460
+      min: 790
+      // min: 5460
     },
     {
       id: 369,
       name: 'pulse',
-      // min: 700000
-      min: 700000000
+      min: 700000
+      // min: 700000000
     },
     {
       id: 11297108109,
       name: 'palm',
-       min: 9000000000
-      // min: 90
+      //  min: 9000000000
+      min: 90
     },
     {
       id: 324,
       name: 'zkSync',
-      // min: 10
-      min: 4832.03
+      min: 10
+      // min: 4832.03
     },
     {
       id: 100,
       name: 'gnosis',
-      // min: 0.1
-      min: 37
+      min: 0.1
+      // min: 37
     },
     {
       id: 8453,
       name: 'base',
-      // min: 100
-      min: 10251967800
+      min: 100
+      // min: 10251967800
     }
     
 
